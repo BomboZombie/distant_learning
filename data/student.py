@@ -8,5 +8,5 @@ class Student(User, SqlAlchemyBase):
     
     learning_status = sa.Column(sa.String, nullable=True)
 
-    # solutions = sa.orm.relationship("Solution",
-    #                             backref="student")
+    solutions = sa.orm.relationship("Solution",
+                                    backref="student")

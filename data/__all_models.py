@@ -4,6 +4,6 @@ from . import student
 
 from . import group
 
-# from . import task
-# from . import solution
-# from . import assignment
+from . import task
+from . import solution
+from . import deadline

@@ -7,11 +7,11 @@ student_group = sa.Table('students_to_groups',
                          SqlAlchemyBase.metadata,
                          sa.Column('student',
                                    sa.Integer,
-                                   sa.ForeignKey('students.id'), 
+                                   sa.ForeignKey('students.id'),
                                    primary_key=True),
                          sa.Column('group',
                                    sa.Integer,
-                                   sa.ForeignKey('groups.id'), 
+                                   sa.ForeignKey('groups.id'),
                                    primary_key=True)
                          )
 teacher_group = sa.Table('teachers_to_groups',
@@ -33,12 +33,14 @@ class Group(SqlAlchemyBase, SerializerMixin):
                    autoincrement=True)
     name = sa.Column(sa.String)
 
-    # assignments = sa.relationship()
+    deadlines = sa.orm.relationship("Deadline",
+                                     backref="group")
+
     teachers = sa.orm.relationship("Teacher",
                                    secondary="teachers_to_groups",
-                                   backref="groups", 
+                                   backref="groups",
                                    lazy="dynamic")
     students = sa.orm.relationship("Student",
                                    secondary="students_to_groups",
-                                   backref="groups", 
+                                   backref="groups",
                                    lazy="dynamic")

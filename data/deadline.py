@@ -4,13 +4,17 @@ from .db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin  # to-json
 
 
-class Assignment(SqlAlchemyBase, SerializerMixin):
-    __tablename__ = "assignments"
+class Deadline(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = "deadlines"
 
     id = sa.Column(sa.Integer,
                    primary_key=True,
                    autoincrement=True)
-    deadline = sa.Column(sa.DateTime)
-    group = sa.orm.relationship("Group")
+
+    time = sa.Column(sa.DateTime)
+    # author
+    
+    group_id = sa.Column(sa.Integer, sa.ForeignKey("groups.id"))
+
     tasks = sa.orm.relationship("Task",
-                                back_populates="assignment")
+                                backref="assignment")
