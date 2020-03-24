@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/master.css">
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <header id="base_header">
+        <h1 id="headline">Героиня На Карантине</h1>
+        <nav id="session">
+                <p id="username">USERNAME</p>
+                <a id="logout" href="/logout">ВЫЙТИ</a>
+        </nav>
+        <nav id="links">
+            <a href="#">HOME</a>
+            <a href="#">SOMEWHERE</a>
+            <a href="#">SOMEWHERE ELSE</a>
+        </nav>
+    </header>
+    
+    {% block body_content %}{% endblock %}
+    
+</body>
+
+</html>

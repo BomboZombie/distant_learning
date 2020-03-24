@@ -1,0 +1,53 @@
+/* важно для каждой страницы на сайте */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #494949;
+    font-family: sans-serif;
+    color: #eeeeee;
+    font-size: 25px;
+}
+
+a {
+    color: inherit;
+    font-weight: bold;
+}
+
+/* HEADER */
+#base_header {
+    background-color: #de7700;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 2fr 1fr;
+    grid-template-areas:
+        ". headline session"
+        "links links session";
+}
+
+#headline {
+    grid-area: headline;
+    text-align: center;
+}
+
+#session {
+    grid-area: session;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#username{padding-bottom: 10px;}
+
+
+#links {
+    grid-area: links;
+    padding-bottom: 20px;
+}
+
+#links a {
+    margin: 0 20px;
+}

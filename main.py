@@ -15,54 +15,23 @@ app.config['SECRET_KEY'] = '25=+HSvs2w@&FUkbq-GsqZ4Qe!?ST@KVfrL_T_V!@55BrFtZK*?R
 app.permanent_session_lifetime = datetime.timedelta(days=30)  # default
 
 
-def recreate_db():
-    sql = db.create_session()
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    return "<h1>REGISTER</h1>"
 
-    g = db.Group(name="test_group")
 
-    t = db.Teacher(name="John",
-                surname="Doe",
-                email="jdoe@mail.ru")
-    g.teachers.append(t)
-    sql.add(t)
-    sql.commit()
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    return "<h1>LOGIN</h1>"
 
-    s = db.Student(name="Steve",
-                surname="Smith",
-                email="ss_boi@mail.ru")
-    s.groups.append(g)
-    sql.add(s)
-    sql.commit()
+
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 
 if __name__ == '__main__':
     db.global_init("lib/distant_learning.db")
-    sql = db.create_session()
-    
-    dls = sql.query(db.Group).get(1).deadlines
-    for dl in dls:
-        print(dl.time)
-        for t in dl.tasks:
-            print(t.name, t.teacher.name, t.teacher.surname)
-    
-    # g = sql.query(db.Group).get(1)
-    # 
-    # task1 = db.Task(
-    #     name="TASK1",
-    #     teacher_id=1
-    # )
-    # task2 = db.Task(
-    #     name="TASK2",
-    #     teacher_id=1
-    # )
-    # 
-    # dl = db.Deadline(
-    #     group=g,
-    #     time=datetime.datetime.now() + datetime.timedelta(days=2)
-    # )
-    # dl.tasks.append(task1)
-    # dl.tasks.append(task2)
-    # 
-    # sql.commit()
+    # sql = db.create_session()
 
     app.run(port="8080", host='127.0.0.1')
