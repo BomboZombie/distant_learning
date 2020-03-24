@@ -6,7 +6,7 @@ from .user import User
 class Teacher(User, SqlAlchemyBase):
     __tablename__ = "teachers"
 
-    # subjects 
+    # subjects
 
     tasks = sa.orm.relationship("Task",
                                 backref="teacher",

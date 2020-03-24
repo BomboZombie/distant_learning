@@ -19,7 +19,7 @@ class User(UserMixin, SerializerMixin):
     email = sa.Column(sa.String,
                       index=True,
                       unique=True)
-    # about = string(1000)
+    about = sa.Column(sa.String, nullable=True)
     hashed_password = sa.Column(sa.String)
 
     def set_password(self, password):
