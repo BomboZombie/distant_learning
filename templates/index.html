@@ -7,25 +7,41 @@
 {% endblock %}
 
 {% block body_content %}
-
-<div class="groupDisplay">
-    <div class="contentbox">
-        <h3>Ваши группы</h3>
+<main>
+    <div class="groupDisplay">
+        <div class="contentbox">
+            <h3>Ваши группы</h3>
+            {% for g in groups %}
+                <form action="" method="post">
+                    <button type="submit" class="groupBtn" name="load_group_{{ g['id'] }}">{{ g.name }}</button>
+                </form>
+            {% endfor %}
+        </div>
+        <div class="contentbox">
+            <h3>Учителя</h3>
+            {% for t in teachers %}
+                <form action="" method="post">
+                    <button type="submit" class="groupBtn" name="load_teacher_{{ t['id'] }}">{{ t.full_name }}</button>
+                </form>
+            {% endfor %}
+        </div>
+        <div class="contentbox">
+            <h3>Студенты</h3>
+            {% for s in students %}
+                <form action="" method="post">
+                    <button type="submit" class="groupBtn" name="load_student_{{ s['id'] }}">{{ s.full_name }}</button>
+                </form>
+            {% endfor %}
+        </div>
     </div>
-    <div class="contentbox">
-        <h3>Учителя</h3>
-    </div>
-    <div class="contentbox">
-        <h3>Студенты</h3>
-    </div>
-</div>
 
-<div class="social">
-    
-</div>
+    <div class="socialDisplay">
+        
+    </div>
 
-<div class="personal">
-    
-</div>
+    <div class="personalDisplay">
+        
+    </div>
+</main>
 
 {% endblock %}

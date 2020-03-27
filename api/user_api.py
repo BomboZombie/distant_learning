@@ -1,6 +1,8 @@
 from flask_restful import reqparse, Api, abort, Resource
-from flask import Blueprint, request
+from flask import Blueprint, request, abort
+
 import data as db
+from . import manage_sql
 
 user_bp = Blueprint('user_api', __name__)
 api = Api(user_bp)
@@ -11,44 +13,56 @@ api = Api(user_bp)
 для псевдоаттрибутов orm.relationship(), а то рекурсия
 < user.to_dict(only=USER_FIELDS) >
 """
-USER_FIELDS = ("id", "name", "surname", "email", "about")
+
+
+# чтобы отличать Teacher от Student используется аргумент usertype
+# (s-Student, t-Teacher)
+def validate_usertype(usertype):
+    if usertype not in ("t", "s"):
+        abort(1111, {"error": "Invalid usertype. Options: t, s"})
+
 
 class UserList(Resource):
-    """
-        чтобы отличать Teacher от Student используется
-        аргумент usertype (s-Student, t-Teacher)
-    """
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser(bundle_errors=True)
-        self.reqparse.add_argument("usertype", choices=('s', 't'), required=True)
-        
-        self.reqparse.add_argument("name")
-        self.reqparse.add_argument("surname")
-        self.reqparse.add_argument("email")
-        self.reqparse.add_argument("about")
-        self.reqparse.add_argument("hashed_password")
+    def get(self, usertype):
+        validate_usertype(usertype)
+        user_class = {"s": db.Student, "t": db.Teacher}.get(usertype)
+        return {user_class: manage_sql.display_all_instances(user_class)}
 
-    def get(self):
-        usertype = self.reqparse.parse_args().get("usertype")
-        sql = db.create_session()
-        if usertype == "s":
-            users = sql.query(db.Student).all()
-        elif usertype == "t":
-            users = sql.query(db.Teacher).all()
-        return {usertype: [u.to_dict(only=USER_FIELDS) for u in users]}
 
-    def post(self):
-        usertype = self.reqparse.parse_args().get("usertype")
-        if not request.json:
-            return jsonify({'error': 'Empty request'})
-        # if any(self.reqparse.get(v) is None for v in [""]):
-        #     return jsonify()
-        
-        sql = db.create_session()
-        user = db.User()
-        for k, v in self.reqparse:
-            setattr(user, k, v)
-        sql.add(user)
-        
+class UserOne(Resource):
+    def get(self, usertype, id):
+        validate_usertype(usertype)
 
-api.add_resource(UserList, '/api/users/s')
+        user_class = {"s": db.Student, "t": db.Teacher}.get(usertype)
+        user = manage_sql.get_instance_by_id(user_class, id)
+
+        return manage_sql.get_object_data(user)
+
+
+# class TeacherList(UserApi, Resource):
+#     def __init__(self):
+#         UserApi.__init__(self)
+#
+#     def get(self):
+#         sql = db.create_session()
+#         teachers = sql.query(db.Teacher).all()
+#         res = []
+#         for t in teachers:
+#             required_fields = t.to_dict(only=USER_FIELDS)
+#             specific_fields = {rel: unwrap_sql_relation(t, rel)
+#                                for rel in t.get_related_attrs()}
+#             data = {**required_fields, **specific_fields} # их сумма
+#             res.append(data)
+#         return {"teachers": res}
+#
+#
+# class TeacherApi(UserApi, Resource):
+#     def get(self, ):
+#         sql = db.create_session()
+#         user = sql.query(db.Teacher).get(id)
+#         if user is None:
+#             abort(404, f"Teacher id {id} does not exist")
+#         return user.to_dict(only=USER_FIELDS)
+
+api.add_resource(UserList, '/api/users/<usertype>')
+api.add_resource(UserOne, '/api/users/<usertype>/<int:id>')

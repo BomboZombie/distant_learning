@@ -10,6 +10,7 @@ import requests
 import forms
 import data as db
 import api
+from api import manage_sql
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '25=+HSvs2w@&FUkbq-GsqZ4Qe!?ST@KVfrL_T_V!@55BrFtZK*?RMPHDA2DTmwada4&zc*ba4EYYkv#JHe#gSXgUjP&@W$kXyGPTB4ZMvzFbKwxkQ7$CyM?B6aZQ&wFbrERdw#H%JqGE-CX4AdJ4@y!%@^feVx4uG4DCT$45=TxwGed-X5QGda*jqBYUt?mAZ7SC?nbKF$37TWrEAu#P*$?nD5C_wEeFY4n2%5-8hsLS@=dzanQ4uKzawU-Zw4tf'
@@ -29,7 +30,10 @@ def login():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    groups = manage_sql.get_all_instances(db.Group)
+    teachers = manage_sql.get_all_instances(db.Teacher)
+    students = manage_sql.get_all_instances(db.Student)
+    return render_template("index.html", groups=groups, teachers=teachers, students=students)
 
 
 if __name__ == '__main__':

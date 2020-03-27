@@ -30,4 +30,7 @@ class User(UserMixin, SerializerMixin):
 
     @property
     def full_name(self):
-        return " ".join([name, surname])
+        return " ".join([self.name, self.surname])
+
+    def get_non_related_attrs(self):
+        return ("id", "name", "surname", "email", "about")

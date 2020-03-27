@@ -14,3 +14,9 @@ class Teacher(User, SqlAlchemyBase):
 
     def __repr__(self):
         return f"{self.id} {self.full_name}"
+    
+    # non related specified at User
+    def get_related_attrs(self):
+        return ("groups", "tasks")
+    
+    

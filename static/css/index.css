@@ -1,3 +1,25 @@
 .contentbox {
     height: 33%
 }
+
+main {
+    height: 82vh;
+    display: grid;
+    grid-template-columns: 2fr 5fr 3fr;
+    grid-template-areas: "group social personal"
+}
+
+.groupDisplay {
+    grid-area: group;
+    border: 2px solid red;
+}
+
+.socialDisplay {
+    grid-area: social;
+    border: 2px solid red;
+}
+
+.personalDisplay {
+    grid-area: personal;
+    border: 2px solid red;
+}

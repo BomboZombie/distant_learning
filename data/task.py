@@ -18,7 +18,6 @@ class Task(SqlAlchemyBase, SerializerMixin):
     data = sa.Column(sa.String())
 
     teacher_id = sa.Column(sa.Integer, sa.ForeignKey("teachers.id"))
-    deadline_id = sa.Column(sa.Integer, sa.ForeignKey("deadlines.id"))
     
     solutions = sa.orm.relationship("Solution",
                                     backref="task", 

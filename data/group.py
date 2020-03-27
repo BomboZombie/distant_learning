@@ -34,13 +34,21 @@ class Group(SqlAlchemyBase, SerializerMixin):
     name = sa.Column(sa.String)
 
     deadlines = sa.orm.relationship("Deadline",
-                                     backref="group")
+                                    backref="group")
+    messages = sa.orm.relationship("Message",
+                                    backref="group")
 
     teachers = sa.orm.relationship("Teacher",
                                    secondary="teachers_to_groups",
                                    backref="groups",
-                                   lazy="dynamic")
+                                   lazy="subquery")
     students = sa.orm.relationship("Student",
                                    secondary="students_to_groups",
                                    backref="groups",
-                                   lazy="dynamic")
+                                   lazy="subquery")
+
+    def get_related_attrs(self):
+        return ("deadlines", "teachers", "students")
+
+    def get_non_related_attrs(self):
+        return ("id", "name")
