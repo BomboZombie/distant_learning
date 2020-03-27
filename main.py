@@ -30,12 +30,12 @@ def login():
 
 @app.route("/")
 def home():
-    groups = manage_sql.get_all_instances(db.Group)
-    teachers = manage_sql.get_all_instances(db.Teacher)
-    students = manage_sql.get_all_instances(db.Student)
+    # ...
     return render_template("index.html", groups=groups, teachers=teachers, students=students)
 
 
 if __name__ == '__main__':
     db.global_init("lib/distant_learning.db")
+    import serve 
+    serve.recreate_db()
     app.run(port="8080", host='127.0.0.1')

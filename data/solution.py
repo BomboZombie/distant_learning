@@ -17,11 +17,11 @@ class Solution(SqlAlchemyBase, SerializerMixin):
     data = sa.Column(sa.String)
     response = sa.Column(sa.String, nullable=True)
 
-    student_id = sa.Column(sa.Integer, sa.ForeignKey("students.id"))
+    user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
     task_id = sa.Column(sa.Integer, sa.ForeignKey("tasks.id"))
 
     def get_related_attrs(self):
-        return ("student_id", "task_id")
+        return ("user_id", "task_id")
 
     def get_non_related_attrs(self):
         return ("id", "created_time", "data", "response",)

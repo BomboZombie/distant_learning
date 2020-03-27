@@ -9,7 +9,8 @@ from flask_login import UserMixin  # flask-login
 from sqlalchemy_serializer import SerializerMixin  # to-json
 
 
-class User(UserMixin, SerializerMixin):
+class User(UserMixin, SerializerMixin, SqlAlchemyBase):
+    __tablename__ = "users"
     id = sa.Column(sa.Integer,
                    primary_key=True,
                    autoincrement=True)
@@ -21,6 +22,13 @@ class User(UserMixin, SerializerMixin):
                       unique=True)
     about = sa.Column(sa.String, nullable=True)
     hashed_password = sa.Column(sa.String)
+
+    messages = sa.orm.relationship("Message",
+                                   backref="user")
+    tasks = sa.orm.relationship("Task",
+                                backref="user")
+    solutions = sa.orm.relationship("Solution",
+                                    backref="student")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
@@ -34,3 +42,7 @@ class User(UserMixin, SerializerMixin):
 
     def get_non_related_attrs(self):
         return ("id", "name", "surname", "email", "about")
+
+    def get_related_attrs(self):
+        return ("solutions",
+                "groups", "tasks")

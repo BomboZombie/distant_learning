@@ -1,6 +1,4 @@
 from . import user
-from . import teacher
-from . import student
 
 from . import group
 

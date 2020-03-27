@@ -119,7 +119,7 @@ def recreate_db():
     sql = db.create_session()
 
     for t in teachers:
-        teacher = db.Teacher(name=t['name'],
+        teacher = db.User(name=t['name'],
                              surname=t['surname'],
                              email=t['email'],
                              about=t['about'])
@@ -133,7 +133,7 @@ def recreate_db():
     sql = db.create_session()
 
     for s in students:
-        student = db.Student(name=s['name'],
+        student = db.User(name=s['name'],
                              surname=s['surname'],
                              email=s['email'],
                              about=s['about'])
@@ -146,11 +146,11 @@ def recreate_db():
     for g in groups:
         group = db.Group(name=g["name"])
         for student_id in g["students"]:
-            student = sql.query(db.Student).get(student_id)
-            student.groups.append(group)
+            student = sql.query(db.User).get(student_id)
+            student.student_groups.append(group)
         for teacher_id in g["teachers"]:
-            teacher = sql.query(db.Teacher).get(teacher_id)
-            teacher.groups.append(group)
+            teacher = sql.query(db.User).get(teacher_id)
+            teacher.teacher_groups.append(group)
     sql.commit()
     sql.close()
     sql = db.create_session()

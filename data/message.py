@@ -15,7 +15,6 @@ class Message(SqlAlchemyBase, SerializerMixin):
     created_time = sa.Column(sa.DateTime,
                              default=datetime.datetime.now)
     data = sa.Column(sa.String)
-    sender_id = sa.Column(sa.Integer)
-    sender_type = sa.Column(sa.String)
     
+    user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
     group_id = sa.Column(sa.Integer, sa.ForeignKey("groups.id"))

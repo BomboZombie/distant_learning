@@ -7,7 +7,7 @@ student_group = sa.Table('students_to_groups',
                          SqlAlchemyBase.metadata,
                          sa.Column('student',
                                    sa.Integer,
-                                   sa.ForeignKey('students.id'),
+                                   sa.ForeignKey('users.id'),
                                    primary_key=True),
                          sa.Column('group',
                                    sa.Integer,
@@ -18,7 +18,7 @@ teacher_group = sa.Table('teachers_to_groups',
                          SqlAlchemyBase.metadata,
                          sa.Column('teacher',
                                    sa.Integer,
-                                   sa.ForeignKey('teachers.id')),
+                                   sa.ForeignKey('users.id')),
                          sa.Column('group',
                                    sa.Integer,
                                    sa.ForeignKey('groups.id'))
@@ -38,13 +38,13 @@ class Group(SqlAlchemyBase, SerializerMixin):
     messages = sa.orm.relationship("Message",
                                     backref="group")
 
-    teachers = sa.orm.relationship("Teacher",
+    teachers = sa.orm.relationship("User",
                                    secondary="teachers_to_groups",
-                                   backref="groups",
+                                   backref="teacher_groups",
                                    lazy="subquery")
-    students = sa.orm.relationship("Student",
+    students = sa.orm.relationship("User",
                                    secondary="students_to_groups",
-                                   backref="groups",
+                                   backref="student_groups",
                                    lazy="subquery")
 
     def get_related_attrs(self):
