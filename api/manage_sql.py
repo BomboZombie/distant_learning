@@ -7,14 +7,6 @@ def unwrap_sql_relation(cls, attr):
         res.append(item.id)
     return res
 
-
-def set_sql_relation(object, value_class, attr, value_ids):
-    array = getattr(object, attr)
-    for id in value_ids:
-        item = fetch_one_instance(value_class, id)
-        array.append(item)
-
-
 def get_all_instances(cls):
     sql = db.create_session()
     res = []

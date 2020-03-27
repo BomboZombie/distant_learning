@@ -25,7 +25,7 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    return "<h1>LOGIN</h1>"
+    return render_template()
 
 
 @app.route("/")

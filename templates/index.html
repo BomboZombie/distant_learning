@@ -13,7 +13,7 @@
             <h3>Ваши группы</h3>
             {% for g in groups %}
                 <form action="" method="post">
-                    <button type="submit" class="groupBtn" name="load_group_{{ g['id'] }}">{{ g.name }}</button>
+                    <button type="submit" class="groupBtn" name="load_group_{{ g['id'] }}">{{ g['name'] }}</button>
                 </form>
             {% endfor %}
         </div>
@@ -21,7 +21,7 @@
             <h3>Учителя</h3>
             {% for t in teachers %}
                 <form action="" method="post">
-                    <button type="submit" class="groupBtn" name="load_teacher_{{ t['id'] }}">{{ t.full_name }}</button>
+                    <button type="submit" class="groupBtn" name="load_teacher_{{ t['id'] }}">{{ t['name'] }} {{ t['surname'] }}</button>
                 </form>
             {% endfor %}
         </div>
@@ -29,7 +29,7 @@
             <h3>Студенты</h3>
             {% for s in students %}
                 <form action="" method="post">
-                    <button type="submit" class="groupBtn" name="load_student_{{ s['id'] }}">{{ s.full_name }}</button>
+                    <button type="submit" class="groupBtn" name="load_student_{{ s['id'] }}">{{ s['name'] }} {{ s['surname'] }}</button>
                 </form>
             {% endfor %}
         </div>
