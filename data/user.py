@@ -24,11 +24,14 @@ class User(UserMixin, SerializerMixin, SqlAlchemyBase):
     hashed_password = sa.Column(sa.String)
 
     messages = sa.orm.relationship("Message",
-                                   backref="user")
+                                   backref="user",
+                                   lazy="subquery")
     tasks = sa.orm.relationship("Task",
-                                backref="user")
+                                backref="user",
+                                lazy="subquery")
     solutions = sa.orm.relationship("Solution",
-                                    backref="student")
+                                    backref="student",
+                                    lazy="subquery")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
@@ -44,5 +47,5 @@ class User(UserMixin, SerializerMixin, SqlAlchemyBase):
         return ("id", "name", "surname", "email", "about")
 
     def get_related_attrs(self):
-        return ("solutions",
-                "groups", "tasks")
+        return ("solutions", "student_groups",
+                "tasks", "teacher_groups")

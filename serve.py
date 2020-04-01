@@ -6,12 +6,12 @@ groups = [
     {
         "name": "подготовка к егэ по русскому",
         "teachers": [1, 2],
-        "students": [2, 3, 4]
+        "students": [3, 4, 5]
     },
     {
         "name": "олимпиадная физика",
         "teachers": [3],
-        "students": [1, 3, 4]
+        "students": [5, 6, 7]
     }
 ]
 

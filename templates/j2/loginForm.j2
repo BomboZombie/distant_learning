@@ -1,0 +1,27 @@
+{% extends "j2/base.j2" %}
+
+{% macro insert_field(field, inputClass="fieldInput") -%}
+        <div class="formField">
+            {{ field.label() }}
+            {{ field(class=inputClass) }}
+            {% for error in field.errors %}
+                <div class="alert">{{ error }}</div>
+            {% endfor %}
+        </div>
+{%- endmacro %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/loginForm.css">
+{% endblock %}
+
+{% block body_content %}
+    <div class="container">
+        <h2>{% block heading %}{% endblock %}</h2>
+        <form class="loginForm" action="" method="post" >
+            {{ form.hidden_tag() }}
+            <div>{{ form.csrf_token }}</div> 
+            {% block fields %}{% endblock %}
+        </form>
+        {% block afterForm %}{% endblock %}
+    </div>
+{% endblock %}

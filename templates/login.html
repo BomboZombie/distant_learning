@@ -1,0 +1,21 @@
+{% extends "j2/loginForm.j2" %}
+
+{% block title %}Login{% endblock %}
+
+{% block heading %}Войти на сайт{% endblock %}
+
+{% block fields %}
+
+{{ insert_field(form.email) }}
+{{ insert_field(form.password) }}
+{{ insert_field(form.remember_me, "checkBox") }}
+
+{{ form.submit(class="submitBtn") }}
+
+{% endblock %}
+
+{% block afterForm %}
+<div class="alert">
+    {{ message }}
+</div>
+{% endblock %}

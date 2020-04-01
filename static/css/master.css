@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
 }
 
 body {
@@ -17,8 +18,16 @@ a {
     font-weight: bold;
 }
 
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 /* HEADER */
 #base_header {
+    height: 130px;
+    margin-bottom: 20px;
     background-color: #de7700;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
@@ -40,6 +49,7 @@ a {
     align-items: center;
     justify-content: center;
 }
+
 #username{padding-bottom: 10px;}
 
 
@@ -50,4 +60,9 @@ a {
 
 #links a {
     margin: 0 20px;
+}
+
+.listEmpty {
+    color: #c2c2c2;
+    font-style: italic;
 }

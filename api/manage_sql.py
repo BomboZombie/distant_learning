@@ -1,11 +1,13 @@
 import data as db
 
 
-def unwrap_sql_relation(cls, attr):
-    res = []
-    for item in getattr(cls, attr):
-        res.append(item.id)
-    return res
+def get_related_ids(obj, attr):
+    return [item.id for item in getattr(obj, attr)]
+
+
+def get_related_objects(obj, attr):
+    return list(map(get_object_data, getattr(obj, attr)))
+
 
 def get_all_instances(cls):
     sql = db.create_session()
@@ -17,16 +19,17 @@ def get_all_instances(cls):
     return res
 
 
-def get_one_instance(arg):
+def get_one_instance(cls, id):
     sql = db.create_session()
     object = sql.query(cls).get(id)
+    data = get_object_data(object)
     sql.close()
-    return get_object_data(object)
+    return data
 
 
 def get_object_data(obj):
-    required_fields = obj.to_dict(only=obj.get_non_related_attrs())
-    specific_fields = {rel: unwrap_sql_relation(obj, rel)
-                       for rel in obj.get_related_attrs()}
-    data = {**required_fields, **specific_fields}  # их сумма
+    non_related_fields = obj.to_dict(only=obj.get_non_related_attrs())
+    related_fields = {rel: get_related_ids(obj, rel)
+                      for rel in obj.get_related_attrs()}
+    data = {**non_related_fields, **related_fields}  # их сумма
     return data
