@@ -5,7 +5,7 @@ from api import manage_sql
 groups = [
     {
         "name": "подготовка к егэ по русскому",
-        "teachers": [1, 2],
+        "teachers": [1, 2, 7],
         "students": [3, 4, 5]
     },
     {
@@ -120,14 +120,14 @@ def recreate_db():
 
     for t in teachers:
         teacher = db.User(name=t['name'],
-                             surname=t['surname'],
-                             email=t['email'],
-                             about=t['about'])
+                         surname=t['surname'],
+                         email=t['email'],
+                         about=t['about'])
         teacher.set_password(t['password'])
-        sql.add(teacher)
         for task_id in t['tasks']:
             teacher.tasks.append(db.Task(name=tasks[task_id - 1]["name"],
                                          data=tasks[task_id - 1]["data"]))
+            sql.add(teacher)
     sql.commit()
     sql.close()
     sql = db.create_session()

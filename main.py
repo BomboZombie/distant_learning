@@ -48,11 +48,13 @@ def login():
                                form=form)
     return render_template('login.html', form=form)
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect("/")
+
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -81,6 +83,32 @@ def home():
         return redirect("/")
 
 
+@app.route("/usertasks", methods=["GET", "POST"])
+def user_tasks():
+    tasks = manage_sql.get_related_objects(current_user, "tasks")
+    return render_template("usertasks.html", tasks=tasks)
+
+
+@app.route("/task/<int:id>", methods=["GET", "POST"])
+def manage_task():
+    pass
+
+
+@app.route("/usergroups", methods=["GET", "POST"])
+def user_groups():
+    # ЧЕКНУТЬ ЮЗЕРА БЕЗ ГРУПП МБ КРАШ
+    print(current_user.teacher_groups)
+    groups = manage_sql.get_related_objects(current_user, "teacher_groups")
+    return render_template("usergroups.html", groups=groups)
+
+
+@app.route("/group/<int:id>", methods=["GET", "POST"])
+def manage_group():
+    pass
+
+
 if __name__ == '__main__':
     db.global_init("lib/distant_learning.db")
+    # import serve
+    # serve.recreate_db()
     app.run(port="8080", host='127.0.0.1')

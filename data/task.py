@@ -22,3 +22,9 @@ class Task(SqlAlchemyBase, SerializerMixin):
     solutions = sa.orm.relationship("Solution",
                                     backref="task", 
                                     lazy="dynamic")
+
+    def get_related_attrs(self):
+        return ("solutions", )
+
+    def get_non_related_attrs(self):
+        return ("id", "name", "created_time", "data", "user_id")
