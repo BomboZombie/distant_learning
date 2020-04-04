@@ -96,15 +96,25 @@ def manage_task():
 
 @app.route("/usergroups", methods=["GET", "POST"])
 def user_groups():
-    # ЧЕКНУТЬ ЮЗЕРА БЕЗ ГРУПП МБ КРАШ
-    print(current_user.teacher_groups)
     groups = manage_sql.get_related_objects(current_user, "teacher_groups")
     return render_template("usergroups.html", groups=groups)
 
 
+@app.route("/newgroup", methods=["GET"])
+def new_group():
+    sql = db.create_session()
+    new_group = db.Group()
+    new_group_id = new_group.id
+    sql.add(new_group)
+    sql.commit()
+    return redirect(f"/group/{new_group_id}")
+
+
 @app.route("/group/<int:id>", methods=["GET", "POST"])
 def manage_group():
-    pass
+    form = forms.GroupForm()
+
+
 
 
 if __name__ == '__main__':

@@ -3,17 +3,22 @@
 {% block title %}My Groups{% endblock %}
 
 {% block head %}
-	
+
 {% endblock %}
 
 {% block body_content %}
-	<h2>Ваши Задания</h2>
+	<h2>Ваши Группы</h2>
 	<p class="help">Вы можете назначать </p>
 	<button onclick="location.href='/newjob'">Создать Группу</button>
-	
+
 	<div class="container">
-		{% for item in tasks %}
-			<button onclick="location.href='/task/{{ item['id'] }}'">{{ item["name"] }}</button>
-		{% endfor %}
+		{% if groups is not none %}
+			{% for item in groups %}
+				<button onclick="location.href='/task/{{ item['id'] }}'">{{ item["name"] }}</button>
+			{% endfor %}
+		{% else %}
+			<h5 class="listEmpty">Групп нет</h5>
+		{% endif %}
+
 	</div>
 {% endblock %}

@@ -2,11 +2,13 @@ import data as db
 
 
 def get_related_ids(obj, attr):
-    return [item.id for item in getattr(obj, attr)]
+    if hasattr(obj, attr):
+        return [item.id for item in getattr(obj, attr)]
 
 
 def get_related_objects(obj, attr):
-    return list(map(get_object_data, getattr(obj, attr)))
+    if hasattr(obj, attr):
+        return list(map(get_object_data, getattr(obj, attr)))
 
 
 def get_all_instances(cls):

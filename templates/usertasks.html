@@ -3,17 +3,21 @@
 {% block title %}My Tasks{% endblock %}
 
 {% block head %}
-	
+
 {% endblock %}
 
 {% block body_content %}
 	<h2>Ваши Задания</h2>
 	<p class="help">Вы можете назначать </p>
 	<button onclick="location.href = '/newjob'">Добавить Задание</button>
-	
+
 	<div class="container">
-		{% for item in tasks %}
-			<button onclick="location.href='/task/{{ item['id'] }}'">{{ item["name"] }}</button>
-		{% endfor %}
+		{% if tasks is not none %}
+			{% for item in tasks %}
+				<button onclick="location.href='/task/{{ item['id'] }}'">{{ item["name"] }}</button>
+			{% endfor %}
+		{% else %}
+			<h5 class="listEmpty">Заданий нет</h5>
+		{% endif %}
 	</div>
 {% endblock %}
