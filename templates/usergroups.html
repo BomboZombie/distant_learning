@@ -1,4 +1,4 @@
-{% extends "/j2/base.j2" %}
+{% extends "j2/base.j2" %}
 
 {% block title %}My Groups{% endblock %}
 
@@ -9,16 +9,20 @@
 {% block body_content %}
 	<h2>Ваши Группы</h2>
 	<p class="help">Вы можете назначать </p>
-	<button onclick="location.href='/newjob'">Создать Группу</button>
+	<button onclick="location.href='/newgroup'">Создать Группу</button>
 
 	<div class="container">
 		{% if groups is not none %}
 			{% for item in groups %}
-				<button onclick="location.href='/task/{{ item['id'] }}'">{{ item["name"] }}</button>
+				<div class="item">
+					{% set id=item['id'] %}
+					<a class="manageLink" href="/task/{{ id }}">{{ item["name"] }}</a>
+					<button class="itemBtn" style="background-color: #aaaaa8" onclick="location.href='/group/{{ id }}'">Редактировать</button>
+					<button class="itemBtn" style="background-color: #f94949" onclick="location.href='/deadline/{{ id }}'">Назначить Задание</button>
+				</div>
 			{% endfor %}
 		{% else %}
 			<h5 class="listEmpty">Групп нет</h5>
 		{% endif %}
-
 	</div>
 {% endblock %}

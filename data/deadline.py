@@ -32,7 +32,7 @@ class Deadline(SqlAlchemyBase, SerializerMixin):
                                 secondary="deadlines_to_tasks")
 
     def get_non_related_attrs(self):
-        return ("id", "time")
+        return ("id", "time", "group_id")
 
     def get_related_attrs(self):
-        return ("group_id", "tasks")
+        return ("tasks", )

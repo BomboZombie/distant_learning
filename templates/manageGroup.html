@@ -1,0 +1,40 @@
+{% extends "j2/base.j2" %}
+
+{% block title %}Group{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body_content %}
+	<div class="container">
+		<form class="baseForm" method="post">
+			<div class="item">
+				<label>Название Группы</label>
+				<input type="text" name="name" default="{{ data['name'] }}">
+			</div>
+
+			<div class="item">
+				<label>Учителя</label>
+				{% for teacher in data['teachers'] %}
+					{{ teacher['email'] }}
+				{% endfor %}
+				<div class="teachers">
+					<input type="text" name="teacher">
+				</div>
+				<button class="plusBtn">+</button>
+			</div>
+
+			<div class="item">
+				<label>Ученики</label>
+				{% for student in data['students'] %}
+					{{ student['email'] }}
+				{% endfor %}
+				<div class="students">
+					<input type="text" name="student">
+				</div>
+				<button class="plusBtn">+</button>
+			</div>
+		</form>
+	</div>
+{% endblock %}

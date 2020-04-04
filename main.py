@@ -89,9 +89,21 @@ def user_tasks():
     return render_template("usertasks.html", tasks=tasks)
 
 
+@app.route("/newtask", methods=["GET"])
+def new_task():
+    sql = db.create_session()
+    new_task = db.Task()
+    new_task_id = new_task.id
+    sql.add(new_task)
+    sql.commit()
+    sql.close()
+    return redirect(f"/task/{new_task_id}")
+
+
 @app.route("/task/<int:id>", methods=["GET", "POST"])
 def manage_task():
-    pass
+
+    return render_template()
 
 
 @app.route("/usergroups", methods=["GET", "POST"])
@@ -107,14 +119,29 @@ def new_group():
     new_group_id = new_group.id
     sql.add(new_group)
     sql.commit()
+    sql.close()
     return redirect(f"/group/{new_group_id}")
 
 
 @app.route("/group/<int:id>", methods=["GET", "POST"])
-def manage_group():
-    form = forms.GroupForm()
+def manage_group(id):
+    if request.method == "GET":
+        sql = db.create_session()
+        group = sql.query(db.Group).get(id)
+        group_data = manage_sql.get_object_data(group)
+        group_data['deadlines'] = [manage_sql.get_one_instance(db.Deadline, did) for did in group_data['deadlines']]
+        group_data['teachers'] = [sql.query(db.User).get(uid).to_dict(only=("name", "surname", "email")) for uid in group_data['teachers']]
+        group_data['students'] = [sql.query(db.User).get(uid).to_dict(only=("name", "surname", "email")) for uid in group_data['students']]
+        sql.close()
+        import json
+        print(json.dumps(group_data, ensure_ascii=False, indent=4))
+        return render_template("manageGroup.html", data=group_data)
+    if request.method == "POST":
+        name = request.form
 
-
+@app.route("/deadline/<int:gruop_id>", methods=["GET", "POST"])
+def add_deadline(gruop_id):
+    pass
 
 
 if __name__ == '__main__':

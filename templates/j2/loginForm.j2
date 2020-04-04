@@ -17,9 +17,9 @@
 {% block body_content %}
     <div class="container">
         <h2>{% block heading %}{% endblock %}</h2>
-        <form class="loginForm" action="" method="post" >
+        <form class="loginForm baseForm" action="" method="post" >
             {{ form.hidden_tag() }}
-            <div>{{ form.csrf_token }}</div> 
+            <div>{{ form.csrf_token }}</div>
             {% block fields %}{% endblock %}
         </form>
         {% block afterForm %}{% endblock %}
