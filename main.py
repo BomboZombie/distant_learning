@@ -116,9 +116,13 @@ def user_groups():
 def new_group():
     sql = db.create_session()
     new_group = db.Group()
-    new_group_id = new_group.id
-    sql.add(new_group)
+    cu = sql.query(db.User).get(current_user.id)
+
+    cu.teacher_groups.append(new_group)
     sql.commit()
+
+    new_group_id = new_group.id
+
     sql.close()
     return redirect(f"/group/{new_group_id}")
 
@@ -130,19 +134,74 @@ def manage_group(id):
         group = sql.query(db.Group).get(id)
         group_data = manage_sql.get_object_data(group)
         group_data['deadlines'] = [manage_sql.get_one_instance(db.Deadline, did) for did in group_data['deadlines']]
-        group_data['teachers'] = [sql.query(db.User).get(uid).to_dict(only=("name", "surname", "email")) for uid in group_data['teachers']]
-        group_data['students'] = [sql.query(db.User).get(uid).to_dict(only=("name", "surname", "email")) for uid in group_data['students']]
+        group_data['teachers'] = [sql.query(db.User).get(uid).to_dict(only=("id", "name", "surname", "email")) for uid in group_data['teachers']]
+        group_data['students'] = [sql.query(db.User).get(uid).to_dict(only=("id", "name", "surname", "email")) for uid in group_data['students']]
         sql.close()
-        import json
-        print(json.dumps(group_data, ensure_ascii=False, indent=4))
         return render_template("manageGroup.html", data=group_data)
     if request.method == "POST":
-        name = request.form
+        data = {k:v.strip() for k, v in dict(request.form).items() if v != ""}
+        sql = db.create_session()
+        group = sql.query(db.Group).get(id)
+        if data.get("name") is not None:
+            group.name = request.form["name"]
+
+        # delete selected
+        for uid in map(lambda x: x.strip("dt"),
+                       filter(lambda x: x.startswith("dt"), data.keys())):
+            user = sql.query(db.User).get(int(uid))
+            group.teachers.remove(user)
+
+        for uid in map(lambda x: x.strip("ds"),
+                       filter(lambda x: x.startswith("ds"), data.keys())):
+            user = sql.query(db.User).get(int(uid))
+            group.students.remove(user)
+
+        sql.commit()
+
+        # add users to group
+        errors = {"not_found":[], "intercept": []}
+        for _, email in filter(lambda x: x[0].startswith("at"), data.items()):
+            user = sql.query(db.User).filter(db.User.email == email).first()
+            if user is None:
+                errors["not_found"].append(email)
+                continue
+            if user in group.students:
+                errors["intercept"].append(email)
+                continue
+            if user not in group.teachers:
+                group.teachers.append(user)
+
+        for _, email in filter(lambda x: x[0].startswith("as"), data.items()):
+            user = sql.query(db.User).filter(db.User.email == email).first()
+            if user is None:
+                errors["not_found"].append(email)
+                continue
+            if user in group.teachers:
+                errors["intercept"].append(email)
+                continue
+            if user not in group.students:
+                group.students.append(user)
+
+        if len(errors["not_found"]):
+            flash("Не удалось найти: ")
+            for email in errors["not_found"]:
+                flash(email)
+            return redirect(f"/group/{id}")
+
+        if len(errors["intercept"]):
+            flash(f"Попытка назначить 2 роли: ")
+            for email in errors["intercept"]:
+                flash(email)
+            return redirect(f"/group/{id}")
+
+        sql.commit()
+        sql.close()
+        return redirect("/usergroups")
+
 
 @app.route("/deadline/<int:gruop_id>", methods=["GET", "POST"])
 def add_deadline(gruop_id):
     pass
-
 
 if __name__ == '__main__':
     db.global_init("lib/distant_learning.db")

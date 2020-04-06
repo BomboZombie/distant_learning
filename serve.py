@@ -5,13 +5,13 @@ from api import manage_sql
 groups = [
     {
         "name": "подготовка к егэ по русскому",
-        "teachers": [1, 2, 7],
-        "students": [3, 4, 5]
+        "teachers": [1, 2, 3],
+        "students": [4, 5, 7]
     },
     {
         "name": "олимпиадная физика",
-        "teachers": [3],
-        "students": [5, 6, 7]
+        "teachers": [3, 7],
+        "students": [4, 5, 6]
     }
 ]
 

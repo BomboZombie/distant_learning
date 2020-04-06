@@ -8,4 +8,4 @@ from .task import Task
 from .solution import Solution
 from .deadline import Deadline
 
-from .message import Message
+# from .message import Message

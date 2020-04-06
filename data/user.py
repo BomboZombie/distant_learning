@@ -23,9 +23,9 @@ class User(UserMixin, SerializerMixin, SqlAlchemyBase):
     about = sa.Column(sa.String, nullable=True)
     hashed_password = sa.Column(sa.String)
 
-    messages = sa.orm.relationship("Message",
-                                   backref="user",
-                                   lazy="subquery")
+    # messages = sa.orm.relationship("Message",
+    #                                backref="user",
+    #                                lazy="subquery")
     tasks = sa.orm.relationship("Task",
                                 backref="user",
                                 lazy="subquery")

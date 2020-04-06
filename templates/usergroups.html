@@ -3,22 +3,29 @@
 {% block title %}My Groups{% endblock %}
 
 {% block head %}
-
+<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
 {% endblock %}
 
 {% block body_content %}
-	<h2>Ваши Группы</h2>
-	<p class="help">Вы можете назначать </p>
-	<button onclick="location.href='/newgroup'">Создать Группу</button>
+	<div class="container">
+		<div class="beginPage">
+			<h2>Ваши Группы</h2>
+			<p class="help">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+			tempor incididunt ut labore et dolore magna aliqua.</p>
+			<button class="itemBtn" onclick="location.href='/newgroup'">Создать Группу</button>
+		</div>
+	</div>
 
 	<div class="container">
 		{% if groups is not none %}
 			{% for item in groups %}
 				<div class="item">
 					{% set id=item['id'] %}
-					<a class="manageLink" href="/task/{{ id }}">{{ item["name"] }}</a>
-					<button class="itemBtn" style="background-color: #aaaaa8" onclick="location.href='/group/{{ id }}'">Редактировать</button>
-					<button class="itemBtn" style="background-color: #f94949" onclick="location.href='/deadline/{{ id }}'">Назначить Задание</button>
+					<h3>{{ item["name"] }}</h3>
+					<div>
+						<button class="itemBtn" style="background-color: #61e58e" onclick="location.href='/group/{{ id }}'">Редактировать</button>
+						<button class="itemBtn" style="background-color: #f6af40" onclick="location.href='/deadline/{{ id }}'">Назначить Задание</button>
+					</div>
 				</div>
 			{% endfor %}
 		{% else %}

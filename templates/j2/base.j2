@@ -29,8 +29,20 @@
         {% endif %}
     </header>
 
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="container alert" style="width: 40%; margin: 20px auto;">
+                {% for msg in messages %}
+                    <div class="alert">{{ msg }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     {% block body_content %}{% endblock %}
 
+    {% block script %}{% endblock %}
 </body>
 
 </html>

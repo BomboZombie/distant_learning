@@ -3,38 +3,78 @@
 {% block title %}Group{% endblock %}
 
 {% block head %}
-
+	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
 {% endblock %}
 
 {% block body_content %}
-	<div class="container">
-		<form class="baseForm" method="post">
-			<div class="item">
-				<label>Название Группы</label>
-				<input type="text" name="name" default="{{ data['name'] }}">
-			</div>
 
-			<div class="item">
-				<label>Учителя</label>
-				{% for teacher in data['teachers'] %}
-					{{ teacher['email'] }}
-				{% endfor %}
-				<div class="teachers">
-					<input type="text" name="teacher">
+	<form class="baseForm" method="post">
+			<div class="container">
+				<div class="item">
+					<label class="itemTitle">Название Группы</label>
+					<label class="current">{{ data['name'] }}</label>
+					<label class="edit">Изменить</label>
+					<input class="fieldInput" type="text" name="name">
 				</div>
-				<button class="plusBtn">+</button>
-			</div>
 
-			<div class="item">
-				<label>Ученики</label>
-				{% for student in data['students'] %}
-					{{ student['email'] }}
-				{% endfor %}
-				<div class="students">
-					<input type="text" name="student">
+				<div class="item">
+					<label class="itemTitle">Учителя</label>
+					{% for teacher in data['teachers'] %}
+						<div class="existField">
+							<label class="current">{{ teacher['surname'] }}</label>
+							<label class="current">{{ teacher['name'] }}</label>
+							<label class="current">{{ teacher['email'] }}</label>
+							<div class="rm">
+								<label class="edit">Удалить</label>
+								<input type="checkbox" name="dt{{ teacher['id'] }}">
+							</div>
+						</div>
+					{% endfor %}
+
+					<label class="edit">Добавить</label>
+					<div class="multipleInput" id="teachers">
+						<input class="fieldInput" type="email" name="at0">
+					</div>
+					<button class="plusBtn" id="addTeacher" type="button">+</button>
 				</div>
-				<button class="plusBtn">+</button>
+
+				<div class="item">
+					<label class="itemTitle">Ученики</label>
+					{% for student in data['students'] %}
+						<div class="existField">
+							<label class="current">{{ student['surname'] }}</label>
+							<label class="current">{{ student['name'] }}</label>
+							<label class="current">{{ student['email'] }}</label>
+							<div class="rm">
+								<label class="edit">Удалить</label>
+								<input type="checkbox" name="ds{{ student['id'] }}">
+							</div>
+						</div>
+					{% endfor %}
+
+					<label class="edit">Добавить</label>
+					<div class="multipleInput" id="students">
+						<input class="fieldInput" type="email" name="as0">
+					</div>
+					<button class="plusBtn" id="addStudent" type="button">+</button>
+				</div>
+
+				<button class="submitBtn">Сохранить Изменения</button>
 			</div>
-		</form>
-	</div>
+	</form>
+
+{% endblock %}
+
+{% block script %}
+	<script>
+		$('#addTeacher').click(function() {
+			let cnt = $("#teachers").children().length;
+			$("#teachers").append(`<input class="fieldInput" type="text" name="at${cnt}">`)
+		});
+		$('#addStudent').click(function() {
+			let cnt = $("#students").children().length;
+			$("#students").append(`<input class="fieldInput" type="text" name="as${cnt}">`)
+		});
+	</script>
 {% endblock %}
