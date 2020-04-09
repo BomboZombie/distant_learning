@@ -32,6 +32,9 @@ class User(UserMixin, SerializerMixin, SqlAlchemyBase):
     solutions = sa.orm.relationship("Solution",
                                     backref="student",
                                     lazy="subquery")
+    deadlines = sa.orm.relationship("Deadline",
+                                    backref="user",
+                                    lazy="subquery")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

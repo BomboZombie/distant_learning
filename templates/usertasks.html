@@ -3,18 +3,29 @@
 {% block title %}My Tasks{% endblock %}
 
 {% block head %}
-
+<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
 {% endblock %}
 
 {% block body_content %}
-	<h2>Ваши Задания</h2>
-	<p class="help">Вы можете назначать </p>
-	<button onclick="location.href = '/newjob'">Добавить Задание</button>
+
+	<div class="container">
+		<div class="beginPage">
+			<h2>Ваши Задания</h2>
+			<p class="help">Вы можете назначать </p>
+			<button class="itemBtn" onclick="location.href = '/newjob'">Добавить Задание</button>
+		</div>
+	</div>
 
 	<div class="container">
 		{% if tasks is not none %}
 			{% for item in tasks %}
-				<button onclick="location.href='/task/{{ item['id'] }}'">{{ item["name"] }}</button>
+				<div class="item">
+					{% set id=item['id'] %}
+					<h3>{{ item["name"] }}</h3>
+					<div>
+						<button class="itemBtn" style="background-color: #61e58e" onclick="location.href='/task/{{ item['id'] }}'">Редактировать</button>
+					</div>
+				</div>
 			{% endfor %}
 		{% else %}
 			<h5 class="listEmpty">Заданий нет</h5>

@@ -1,0 +1,39 @@
+{% extends "j2/base.j2" %}
+
+{% block title %}Task{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
+<link rel="stylesheet" type="text/css" href="">
+{% endblock %}
+
+{% block body_content %}
+	<form class="baseForm">
+		<div class="container">
+			<div class="item">
+				<label>Задание 1: </label>
+				<input type="text" name="name1">
+
+				<label class="edit">Текст Задания</label>
+				<input type="" name="text1">
+
+				<label class="edit">Фото к заданию</label>
+				<input type="" name="text1">
+
+				<label class="edit">Тип Ответа</label>
+				<input type="" name="type1">
+
+				<label class="edit">Ответ: </label>
+				<div class="ans" id="ans1">
+
+				</div>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript">
+
+	</script>
+{% endblock %}

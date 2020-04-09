@@ -1,25 +1,21 @@
 {% extends "j2/base.j2" %}
 
-{% block title %}Group{% endblock %}
+{% block title %}Deadline{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
+	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
 {% endblock %}
 
 {% block body_content %}
 
 	<form class="baseForm" method="post">
 			<div class="container">
-				<div class="item">
-					<label class="itemTitle">Название Группы</label>
-					<label class="current">{{ data['name'] }}</label>
-					<label class="edit">Изменить</label>
-					<input class="fieldInput" type="text" name="name">
-				</div>
+				<h2>Группа: {{ group['name'] }}</h2>
 
 				<div class="item">
-					<label class="itemTitle">Учителя</label>
-					{% for teacher in data['teachers'] %}
+					<label class="itemTitle">Уже назначены</label>
+					{% for dl in group['deadlines'] %}
 						<div class="existField">
 							<label class="current">{{ teacher['surname'] }}</label>
 							<label class="current">{{ teacher['name'] }}</label>
@@ -30,33 +26,19 @@
 							</div>
 						</div>
 					{% endfor %}
-
-					<label class="edit">Добавить</label>
-					<div class="multipleInput" id="teachers">
-						<input class="fieldInput" type="email" name="at0">
-					</div>
-					<button class="plusBtn" id="addTeacher" type="button">+</button>
 				</div>
 
 				<div class="item">
-					<label class="itemTitle">Ученики</label>
-					{% for student in data['students'] %}
+					<label class="itemTitle">Назначить</label>
+					{% for teacher in data['teachers'] %}
 						<div class="existField">
-							<label class="current">{{ student['surname'] }}</label>
-							<label class="current">{{ student['name'] }}</label>
-							<label class="current">{{ student['email'] }}</label>
+							<label class="current">{{ teacher['surname'] }}</label>
 							<div class="rm">
 								<label class="edit">Удалить</label>
-								<input type="checkbox" name="ds{{ student['id'] }}">
+								<input type="checkbox" name="dt{{ teacher['id'] }}">
 							</div>
 						</div>
 					{% endfor %}
-
-					<label class="edit">Добавить</label>
-					<div class="multipleInput" id="students">
-						<input class="fieldInput" type="email" name="as0">
-					</div>
-					<button class="plusBtn" id="addStudent" type="button">+</button>
 				</div>
 
 				<button class="submitBtn">Сохранить Изменения</button>

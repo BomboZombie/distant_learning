@@ -25,6 +25,8 @@ class Deadline(SqlAlchemyBase, SerializerMixin):
 
     time = sa.Column(sa.DateTime)
 
+    user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
+
     group_id = sa.Column(sa.Integer, sa.ForeignKey("groups.id"))
 
     tasks = sa.orm.relationship("Task",

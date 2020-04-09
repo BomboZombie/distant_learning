@@ -18,9 +18,9 @@ class Task(SqlAlchemyBase, SerializerMixin):
     data = sa.Column(sa.String())
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
-    
+
     solutions = sa.orm.relationship("Solution",
-                                    backref="task", 
+                                    backref="task",
                                     lazy="dynamic")
 
     def get_related_attrs(self):

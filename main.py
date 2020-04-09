@@ -83,7 +83,7 @@ def home():
         return redirect("/")
 
 
-@app.route("/usertasks", methods=["GET", "POST"])
+@app.route("/usertasks", methods=["GET"])
 def user_tasks():
     tasks = manage_sql.get_related_objects(current_user, "tasks")
     return render_template("usertasks.html", tasks=tasks)
@@ -93,20 +93,26 @@ def user_tasks():
 def new_task():
     sql = db.create_session()
     new_task = db.Task()
-    new_task_id = new_task.id
-    sql.add(new_task)
+    cu = sql.query(db.User).get(current_user.id) # current_user в этой sql сессии
+
+    cu.tasks.append(new_task)
     sql.commit()
+
+    new_task_id = new_task.id
+
     sql.close()
     return redirect(f"/task/{new_task_id}")
 
 
 @app.route("/task/<int:id>", methods=["GET", "POST"])
 def manage_task():
+    if request.method == "GET":
+        return render_template("manageTask.html")
+    if request.method == "POST":
+        return redirect()
 
-    return render_template()
 
-
-@app.route("/usergroups", methods=["GET", "POST"])
+@app.route("/usergroups", methods=["GET"])
 def user_groups():
     groups = manage_sql.get_related_objects(current_user, "teacher_groups")
     return render_template("usergroups.html", groups=groups)
@@ -116,9 +122,9 @@ def user_groups():
 def new_group():
     sql = db.create_session()
     new_group = db.Group()
-    cu = sql.query(db.User).get(current_user.id)
+    cu = sql.query(db.User).get(current_user.id) # current_user в этой sql сессии
 
-    cu.teacher_groups.append(new_group)
+    cu.teacher_group.append(new_group)
     sql.commit()
 
     new_group_id = new_group.id
@@ -182,6 +188,7 @@ def manage_group(id):
             if user not in group.students:
                 group.students.append(user)
 
+        # flash errors
         if len(errors["not_found"]):
             flash("Не удалось найти: ")
             for email in errors["not_found"]:
@@ -199,9 +206,25 @@ def manage_group(id):
         return redirect("/usergroups")
 
 
-@app.route("/deadline/<int:gruop_id>", methods=["GET", "POST"])
-def add_deadline(gruop_id):
+@app.route("/new_deadline/<int:gruop_id>", methods=["GET", "POST"])
+def new_deadline(gruop_id):
+    sql = db.create_session()
+
+    group = sql.query(db.Group).get(gruop_id)
+    cu = sql.query(db.User).get(current_user.id)
+
+    dl = db.Deadline(user=cu)
+
+    sql.commit()
+    dl_id = dl.id
+    sql.close()
+    return redirect(f"/deadline/{dl_id}")
+
+
+@app.route("/deadline/<int:id>", methods=["GET", "POST"])
+def manage_deadline(id):
     pass
+
 
 if __name__ == '__main__':
     db.global_init("lib/distant_learning.db")
