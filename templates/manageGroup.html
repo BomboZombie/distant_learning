@@ -24,9 +24,9 @@
 							<label class="current">{{ teacher['surname'] }}</label>
 							<label class="current">{{ teacher['name'] }}</label>
 							<label class="current">{{ teacher['email'] }}</label>
-							<div class="rm">
+							<div class="checkcont">
 								<label class="edit">Удалить</label>
-								<input type="checkbox" name="dt{{ teacher['id'] }}">
+								<input class="checkBox" type="checkbox" name="dt{{ teacher['id'] }}">
 							</div>
 						</div>
 					{% endfor %}
@@ -45,9 +45,9 @@
 							<label class="current">{{ student['surname'] }}</label>
 							<label class="current">{{ student['name'] }}</label>
 							<label class="current">{{ student['email'] }}</label>
-							<div class="rm">
+							<div class="checkcont">
 								<label class="edit">Удалить</label>
-								<input type="checkbox" name="ds{{ student['id'] }}">
+								<input class="checkBox" type="checkbox" name="ds{{ student['id'] }}">
 							</div>
 						</div>
 					{% endfor %}

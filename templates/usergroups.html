@@ -4,6 +4,7 @@
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
+<link rel="stylesheet" type="text/css" href="/static/css/usergroups.css">
 {% endblock %}
 
 {% block body_content %}
@@ -18,13 +19,30 @@
 
 	<div class="container">
 		{% if groups is not none %}
-			{% for item in groups %}
+			{% for g in groups %}
 				<div class="item">
-					{% set id=item['id'] %}
-					<h3>{{ item["name"] }}</h3>
+					<h3>{{ g["name"] }}</h3>
 					<div>
-						<button class="itemBtn" style="background-color: #61e58e" onclick="location.href='/group/{{ id }}'">Редактировать</button>
-						<button class="itemBtn" style="background-color: #f6af40" onclick="location.href='/deadline/{{ id }}'">Назначить Задание</button>
+						<button class="itemBtn" style="background-color: #61e58e" onclick="location.href='/group/{{ g['id'] }}'">Редактировать</button>
+						<button class="itemBtn" style="background-color: #f6af40" onclick="location.href='/newDeadline/{{ g['id'] }}'">Назначить Задание</button>
+					</div>
+					<div class="container">
+						<label class="itemTitle">Сроки</label>
+						<div class="scrollBox">
+							{% for dl in g["deadlines"] %}
+								<div class="existField">
+									<label class="current">{{ dl['name'] }}</label>
+									<label class="current">{{ dl['time'] }}</label>
+									<label class="current">{{ dl['user'] }}</label>
+									{% if dl['user_id'] == current_user.id %}
+										<div class="checkcont">
+											<a href="/deadlineSolutions/{{ dl['id'] }}">Решения</a>
+											<a href="/deadline/{{ dl['id'] }}">Изменить</a>
+										</div>
+									{% endif %}
+								</div>
+							{% endfor %}
+						</div>
 					</div>
 				</div>
 			{% endfor %}

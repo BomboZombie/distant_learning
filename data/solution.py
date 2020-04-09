@@ -18,7 +18,7 @@ class Solution(SqlAlchemyBase, SerializerMixin):
     response = sa.Column(sa.String, nullable=True)
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
-    task_id = sa.Column(sa.Integer, sa.ForeignKey("tasks.id"))
+    deadline_id = sa.Column(sa.Integer, sa.ForeignKey("deadlines.id"))
 
     def get_related_attrs(self):
         return ("user_id", "task_id")

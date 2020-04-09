@@ -33,7 +33,7 @@
 }
 
 .current {
-
+	margin-top: 7px;
 }
 
 .edit {
@@ -45,13 +45,17 @@
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1fr 3fr 1fr;
+	/* HOVER */
 }
 
-.rm {
-	display: flex;
+.existField label {
+	margin-left: 3px;
 }
 
-.rm label {margin-right: 6px}
+.checkcont {
+	display: inline-block;
+	margin: 0 auto;
+}
 
 .multipleInput {width: 100%;}
 

@@ -98,19 +98,19 @@ tasks = [
 
 deadlines = [
     {
+        "name": "Russki",
         "time": datetime.datetime.now() + datetime.timedelta(days=2),
         "group": 1,
-        "tasks": [1, 2]
     },
     {
+        "name": "PHYS",
         "time": datetime.datetime.now() + datetime.timedelta(days=3),
         "group": 2,
-        "tasks": [3, 4]
     },
     {
+        "name": "more_phys",
         "time": datetime.datetime.now() + datetime.timedelta(days=4),
         "group": 1,
-        "tasks": [5]
     },
 ]
 
@@ -156,10 +156,12 @@ def recreate_db():
     sql = db.create_session()
 
     for d in deadlines:
-        deadline = db.Deadline(time=d["time"])
+        deadline = db.Deadline(time=d["time"], name=d["name"])
+        user = sql.query(db.User).get(1)
+        deadline.user = user
         deadline.group = sql.query(db.Group).get(d['group'])
-        for task_id in d["tasks"]:
-            task = sql.query(db.Task).get(task_id)
-            task.deadlines.append(deadline)
+        # for task_id in d["tasks"]:
+        #     task = sql.query(db.Task).get(task_id)
+        #     task.deadlines.append(deadline)
     sql.commit()
     sql.close()

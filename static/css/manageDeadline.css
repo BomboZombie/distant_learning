@@ -1,0 +1,17 @@
+.existField {
+	grid-template-columns: 2fr 1fr 1fr
+}
+
+.beginPage {
+	width: 50%;
+}
+
+#time {
+	width: auto;
+	align-self: left;
+}
+
+.checkBox {
+	width: 20px;
+	height: 20px;
+}

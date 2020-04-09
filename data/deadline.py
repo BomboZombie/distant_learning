@@ -23,6 +23,7 @@ class Deadline(SqlAlchemyBase, SerializerMixin):
                    primary_key=True,
                    autoincrement=True)
 
+    name = sa.Column(sa.String)
     time = sa.Column(sa.DateTime)
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
@@ -32,9 +33,12 @@ class Deadline(SqlAlchemyBase, SerializerMixin):
     tasks = sa.orm.relationship("Task",
                                 backref="deadlines",
                                 secondary="deadlines_to_tasks")
+    solutions = sa.orm.relationship("Solution",
+                                    backref="task",
+                                    lazy="dynamic")
 
     def get_non_related_attrs(self):
-        return ("id", "time", "group_id")
+        return ("id", "name", "time", "group_id", "user_id")
 
     def get_related_attrs(self):
         return ("tasks", )

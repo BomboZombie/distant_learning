@@ -3,39 +3,55 @@
 {% block title %}Deadline{% endblock %}
 
 {% block head %}
-	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/manageDeadline.css">
 {% endblock %}
 
 {% block body_content %}
 
 	<form class="baseForm" method="post">
 			<div class="container">
-				<h2>Группа: {{ group['name'] }}</h2>
+				<div class="beginPage">
+					<h3>Группа: {{ group['name'] }}</h3>
+				</div>
 
 				<div class="item">
-					<label class="itemTitle">Уже назначены</label>
-					{% for dl in group['deadlines'] %}
+					<label class="itemTitle">Название Задания</label>
+					<label class="current">{{ deadline["name"] }}</label>
+					<label class="edit">Изменить</label>
+					<input class="fieldInput" type="text" name="name">
+				</div>
+
+				<div class="item">
+					<label class="itemTitle">Дата и Время</label>
+					<label class="current">{{ deadline["time"] }}</label>
+					<label class="edit">Изменить (указывать оба)</label>
+					<input class="fieldInput" type="datetime-local" name="time" id="time">
+				</div>
+
+				<div class="item">
+					<label class="itemTitle">Уже Назначены</label>
+					{% for task in deadline['tasks'] %}
 						<div class="existField">
-							<label class="current">{{ teacher['surname'] }}</label>
-							<label class="current">{{ teacher['name'] }}</label>
-							<label class="current">{{ teacher['email'] }}</label>
-							<div class="rm">
+							<label class="current">{{ task['name'] }}</label>
+							<a href="#">Просмотреть</a>
+							<div class="checkcont">
 								<label class="edit">Удалить</label>
-								<input type="checkbox" name="dt{{ teacher['id'] }}">
+								<input class="checkBox" type="checkbox" name="dt{{ task['id'] }}">
 							</div>
 						</div>
 					{% endfor %}
 				</div>
 
 				<div class="item">
-					<label class="itemTitle">Назначить</label>
-					{% for teacher in data['teachers'] %}
+					<label class="itemTitle">Ваши Задания</label>
+					{% for task in current_user.tasks %}
 						<div class="existField">
-							<label class="current">{{ teacher['surname'] }}</label>
-							<div class="rm">
-								<label class="edit">Удалить</label>
-								<input type="checkbox" name="dt{{ teacher['id'] }}">
+							<label class="current">{{ task.name }}</label>
+							<a href="#">Просмотреть</a>
+							<div class="checkcont">
+								<label class="edit">Назначить</label>
+								<input class="checkBox" type="checkbox" name="at{{ task.id }}">
 							</div>
 						</div>
 					{% endfor %}
@@ -45,17 +61,4 @@
 			</div>
 	</form>
 
-{% endblock %}
-
-{% block script %}
-	<script>
-		$('#addTeacher').click(function() {
-			let cnt = $("#teachers").children().length;
-			$("#teachers").append(`<input class="fieldInput" type="text" name="at${cnt}">`)
-		});
-		$('#addStudent').click(function() {
-			let cnt = $("#students").children().length;
-			$("#students").append(`<input class="fieldInput" type="text" name="as${cnt}">`)
-		});
-	</script>
 {% endblock %}

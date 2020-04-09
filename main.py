@@ -115,6 +115,21 @@ def manage_task():
 @app.route("/usergroups", methods=["GET"])
 def user_groups():
     groups = manage_sql.get_related_objects(current_user, "teacher_groups")
+    sql = db.create_session()
+    for g in groups:
+        dl_ids = g['deadlines'].copy()
+        g["deadlines"] = []
+        for did in dl_ids:
+            manage_sql.get_one_instance(db.Deadline, did)
+            dl = sql.query(db.Deadline).get(did)
+            dl_data = dl.to_dict(only=("id", "name", "time", "user_id"))
+
+            dl_data["user"] = dl.user.full_name
+
+            g["deadlines"].append(dl_data)
+
+    # import json
+    # print(json.dumps({"groups": groups}, ensure_ascii=True, indent=4))
     return render_template("usergroups.html", groups=groups)
 
 
@@ -139,7 +154,6 @@ def manage_group(id):
         sql = db.create_session()
         group = sql.query(db.Group).get(id)
         group_data = manage_sql.get_object_data(group)
-        group_data['deadlines'] = [manage_sql.get_one_instance(db.Deadline, did) for did in group_data['deadlines']]
         group_data['teachers'] = [sql.query(db.User).get(uid).to_dict(only=("id", "name", "surname", "email")) for uid in group_data['teachers']]
         group_data['students'] = [sql.query(db.User).get(uid).to_dict(only=("id", "name", "surname", "email")) for uid in group_data['students']]
         sql.close()
@@ -152,13 +166,11 @@ def manage_group(id):
             group.name = request.form["name"]
 
         # delete selected
-        for uid in map(lambda x: x.strip("dt"),
-                       filter(lambda x: x.startswith("dt"), data.keys())):
+        for uid in remove_prefix(data.keys(), "dt"):
             user = sql.query(db.User).get(int(uid))
             group.teachers.remove(user)
 
-        for uid in map(lambda x: x.strip("ds"),
-                       filter(lambda x: x.startswith("ds"), data.keys())):
+        for uid in remove_prefix(data.keys(), "ds"):
             user = sql.query(db.User).get(int(uid))
             group.students.remove(user)
 
@@ -189,28 +201,31 @@ def manage_group(id):
                 group.students.append(user)
 
         # flash errors
+        err = False
         if len(errors["not_found"]):
+            err = True
             flash("Не удалось найти: ")
             for email in errors["not_found"]:
                 flash(email)
-            return redirect(f"/group/{id}")
 
         if len(errors["intercept"]):
+            err = True
             flash(f"Попытка назначить 2 роли: ")
             for email in errors["intercept"]:
                 flash(email)
-            return redirect(f"/group/{id}")
 
         sql.commit()
         sql.close()
+        if err:
+            return redirect(f"/group/{id}")
         return redirect("/usergroups")
 
 
-@app.route("/new_deadline/<int:gruop_id>", methods=["GET", "POST"])
-def new_deadline(gruop_id):
+@app.route("/newDeadline/<int:group_id>", methods=["GET", "POST"])
+def new_deadline(group_id):
     sql = db.create_session()
 
-    group = sql.query(db.Group).get(gruop_id)
+    group = sql.query(db.Group).get(group_id)
     cu = sql.query(db.User).get(current_user.id)
 
     dl = db.Deadline(user=cu)
@@ -223,7 +238,50 @@ def new_deadline(gruop_id):
 
 @app.route("/deadline/<int:id>", methods=["GET", "POST"])
 def manage_deadline(id):
+    if request.method == "GET":
+        sql = db.create_session()
+        deadline = sql.query(db.Deadline).get(id)
+
+        dl_data = deadline.to_dict(only=("name", "time"))
+        dl_data["tasks"] = [t.to_dict(only=("name", "id")) for t in deadline.tasks]
+
+        g_data = deadline.group.to_dict(only=("name", ))
+        return render_template("manageDeadline.html", deadline=dl_data, group=g_data)
+    if request.method == "POST":
+        data = {k:v.strip() for k, v in dict(request.form).items() if v != ""}
+
+        sql = db.create_session()
+        deadline = sql.query(db.Deadline).get(id)
+
+        err = False
+        for tid in remove_prefix(data.keys(), "dt"):
+            task = sql.query(db.Task).get(tid)
+            deadline.tasks.remove(task)
+
+        for tid in remove_prefix(data.keys(), "at"):
+            task = sql.query(db.Task).get(tid)
+            if task not in deadline.tasks:
+                deadline.tasks.append(task)
+
+        # меняем запись в базе если внесли изменения
+        deadline.name = data.get("name") if data.get("name") else deadline.name
+        deadline.time = datetime.datetime.fromisoformat(data.get("time")) if data.get("time") else deadline.time
+
+        sql.commit()
+        sql.close()
+        if err:
+            return redirect(f"/deadline/{id}")
+        return redirect("/usergroups")
+
+
+@app.route("/deadlineSolutions/<int:dl_id>")
+def solved_for_deadline(group_id, dl_id):
     pass
+
+# Вспомогательные функции
+def remove_prefix(data, prefix):
+    return map(lambda x: x.strip(prefix),
+               filter(lambda x: x.startswith(prefix), data))
 
 
 if __name__ == '__main__':
