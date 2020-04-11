@@ -1,0 +1,12 @@
+textarea {
+	width: 100%;
+	font-size: 18px;
+}
+
+.ans {
+	display: inline-block;
+}
+
+.item {width: 50%;}
+
+.submitBtn {margin-top: 40px;}

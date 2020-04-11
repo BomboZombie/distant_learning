@@ -15,12 +15,16 @@ class Task(SqlAlchemyBase, SerializerMixin):
     name = sa.Column(sa.String)
     created_time = sa.Column(sa.DateTime,
                              default=datetime.datetime.now)
-    data = sa.Column(sa.String())
+    description = sa.Column(sa.String)
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
 
+    problems = sa.orm.relationship("Problem",
+                                    backref="task",
+                                    lazy="subquery")
+
     def get_related_attrs(self):
-        return ("solutions", )
+        return None
 
     def get_non_related_attrs(self):
-        return ("id", "name", "created_time", "data", "user_id")
+        return ("id", "name", "created_time", "user_id")

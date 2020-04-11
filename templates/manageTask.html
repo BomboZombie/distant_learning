@@ -1,0 +1,96 @@
+{% extends "/j2/base.j2" %}
+
+{% block title %}Edit Task{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
+<link rel="stylesheet" type="text/css" href="/static/css/manageTask.css">
+{% endblock %}
+
+{% block body_content %}
+
+	<form class="baseform" method="post">
+		<div class="container">
+			<div class="item">
+				<label class="itemTitle">Название Задания</label>
+				<label class="current">{{ data['name'] }}</label>
+				<label class="edit">Изменить</label>
+				<input class="fieldInput" type="text" name="Name">
+			</div>
+
+			<div class="item">
+				<label class="itemTitle">Описание к Заданию</label>
+				<label class="current">{{ data['description']|safe }}</label>
+				<label class="edit">Изменить</label>
+				<textarea name="Desc" rows="5"></textarea>
+			</div>
+
+			<div class="container">
+				<h3>Уже Добавлено</h3>
+			</div>
+
+			{% if problems|length() != 0 %}
+				<div id="problems" class="container">
+					{% for p in problems %}
+						<div class="item">
+							<h2>#{{ loop.index }}</h2>
+
+							<label class="itemTitle">Текст Задачи</label>
+							<p class="current para">
+								{{ p['text']|safe }}
+							</p>
+							<label class="edit">Изменить Текст Задачи</label>
+							<textarea name="t{{ p['id'] }}" rows="10"></textarea>
+
+							<div class="ans">
+								<label class="itemTitle">Ответ:</label>
+								<label class="current">{{ p['answer'] }}</label>
+							</div>
+							<label class="edit">Изменить Ответ</label>
+							<input class="fieldInput" type="text" name="a{{ p['id'] }}">
+
+							<div class="edit">
+								<label class="edit">Удалить Задание</label>
+								<input class="checkBox" type="checkbox" name="d{{ p['id'] }}">
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div id="problems" class="container"></div>
+				<div class="container">
+					<h5 class="listEmpty">Задач нет</h5>
+				</div>
+			{% endif %}
+
+
+			<div class="container">
+				<h3>Добавить</h3>
+			</div>
+			<div class="container" id="newProblems"></div>
+
+			<button class="plusBtn" id="addProblem" type="button">+</button>
+			<button class="submitBtn">Сохранить Изменения</button>
+		</div>
+	</form>
+
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript">
+		$('#addProblem').click(function() {
+			let cnt = $("#problems").children().length + $("#newProblems").children().length + 1;
+			$("#newProblems").append(`
+				<div class="item">
+					<h2>#${cnt}</h2>
+
+					<label class="itemTitle">Текст Задачи</label>
+					<textarea name="nt${cnt}" rows="10"></textarea>
+
+					<label class="itemTitle">Ответ</label>
+					<input class="fieldInput" type="text" name="na${cnt}">
+				</div>
+			`)
+		});
+	</script>
+{% endblock %}

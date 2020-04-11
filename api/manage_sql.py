@@ -31,7 +31,10 @@ def get_one_instance(cls, id):
 
 def get_object_data(obj):
     non_related_fields = obj.to_dict(only=obj.get_non_related_attrs())
-    related_fields = {rel: get_related_ids(obj, rel)
-                      for rel in obj.get_related_attrs()}
+    if obj.get_related_attrs():
+        related_fields = {rel: get_related_ids(obj, rel)
+                          for rel in obj.get_related_attrs()}
+    else:
+        related_fields = dict()
     data = {**non_related_fields, **related_fields}  # их сумма
     return data

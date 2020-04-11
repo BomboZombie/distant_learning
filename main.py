@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+import re
 from flask import *
 
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -105,11 +106,64 @@ def new_task():
 
 
 @app.route("/task/<int:id>", methods=["GET", "POST"])
-def manage_task():
+def manage_task(id):
     if request.method == "GET":
-        return render_template("manageTask.html")
+        sql = db.create_session()
+        task = sql.query(db.Task).get(id)
+        task_data = task.to_dict(only=("name", "description"))
+
+        problems = [p.to_dict(only=("id", "text", "answer")) for p in task.problems]
+        return render_template("manageTask.html", data=task_data, problems=problems)
     if request.method == "POST":
-        return redirect()
+        print(request.form)
+        data = parse_form(request.form)
+        print(data)
+
+        sql = db.create_session()
+        task = sql.query(db.Task).get(id)
+
+        # change basic
+        if data.get("Name") is not None:
+            task.name = data.get("Name").strip()
+        if data.get("Desc") is not None:
+            task.description = re.sub("\\r\\n", "<br/>", data.get("Desc").strip())
+
+        # change answers
+        for pid, ans in map(lambda x: (x[0].strip("a"), x[1]),
+                            filter(lambda x: x[0].startswith("a"), data.items())):
+            problem = sql.query(db.Problem).get(int(pid))
+            problem.answer = ans
+
+        # change text
+        for pid, text in map(lambda x: (x[0].strip("t"), x[1]),
+                            filter(lambda x: x[0].startswith("t"), data.items())):
+            problem = sql.query(db.Problem).get(int(pid))
+            problem.text = re.sub("\\r\\n", "<br/>", text)
+
+        # delete
+        for pid in remove_prefix(data, "d"):
+            problem = sql.query(db.Problem).get(int(pid))
+            task.problems.remove(problem)
+
+        # add new
+        for k, v in filter(lambda x: x[0].startswith("n"), dict(request.form).items()):
+            pidx = int(k[2:]) - 1
+            if pidx < len(task.problems):
+                problem = task.problems[pidx]
+            else:
+                problem = db.Problem()
+                task.problems.append(problem)
+
+            if k.startswith("na"):
+                problem.answer = v.strip()
+            elif k.startswith("nt"):
+                problem.text = v.strip()
+
+
+        sql.commit()
+        sql.close()
+
+        return redirect(f"/task/{id}")
 
 
 @app.route("/usergroups", methods=["GET"])
@@ -159,7 +213,7 @@ def manage_group(id):
         sql.close()
         return render_template("manageGroup.html", data=group_data)
     if request.method == "POST":
-        data = {k:v.strip() for k, v in dict(request.form).items() if v != ""}
+        data = parse_form(request.form)
         sql = db.create_session()
         group = sql.query(db.Group).get(id)
         if data.get("name") is not None:
@@ -248,7 +302,7 @@ def manage_deadline(id):
         g_data = deadline.group.to_dict(only=("name", ))
         return render_template("manageDeadline.html", deadline=dl_data, group=g_data)
     if request.method == "POST":
-        data = {k:v.strip() for k, v in dict(request.form).items() if v != ""}
+        data = parse_form(request.form)
 
         sql = db.create_session()
         deadline = sql.query(db.Deadline).get(id)
@@ -282,6 +336,9 @@ def solved_for_deadline(group_id, dl_id):
 def remove_prefix(data, prefix):
     return map(lambda x: x.strip(prefix),
                filter(lambda x: x.startswith(prefix), data))
+
+def parse_form(data):
+    return {k:v.strip() for k, v in dict(data).items() if v.strip() != ""}
 
 
 if __name__ == '__main__':

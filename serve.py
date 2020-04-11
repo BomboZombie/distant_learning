@@ -76,23 +76,18 @@ teachers = [
 tasks = [
     {
         "name": "russki nuzhen",
-        "data": "data russki nuzhen"
     },
     {
         "name": "ege na 100",
-        "data": "data ege na 100"
     },
     {
         "name": "mehanica",
-        "data": "data mehanica"
     },
     {
         "name": "termuha",
-        "data": "data termuha"
     },
     {
         "name": "cepi",
-        "data": "data cepi"
     }
 ]
 
@@ -125,8 +120,7 @@ def recreate_db():
                          about=t['about'])
         teacher.set_password(t['password'])
         for task_id in t['tasks']:
-            teacher.tasks.append(db.Task(name=tasks[task_id - 1]["name"],
-                                         data=tasks[task_id - 1]["data"]))
+            teacher.tasks.append(db.Task(name=tasks[task_id - 1]["name"]))
             sql.add(teacher)
     sql.commit()
     sql.close()
@@ -134,9 +128,9 @@ def recreate_db():
 
     for s in students:
         student = db.User(name=s['name'],
-                             surname=s['surname'],
-                             email=s['email'],
-                             about=s['about'])
+                          surname=s['surname'],
+                          email=s['email'],
+                          about=s['about'])
         student.set_password(s['password'])
         sql.add(student)
     sql.commit()
