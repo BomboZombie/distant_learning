@@ -154,8 +154,5 @@ def recreate_db():
         user = sql.query(db.User).get(1)
         deadline.user = user
         deadline.group = sql.query(db.Group).get(d['group'])
-        # for task_id in d["tasks"]:
-        #     task = sql.query(db.Task).get(task_id)
-        #     task.deadlines.append(deadline)
     sql.commit()
     sql.close()

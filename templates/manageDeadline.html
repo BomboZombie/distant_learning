@@ -30,23 +30,22 @@
 				</div>
 
 				<div class="item">
-					<label class="itemTitle">Уже Назначены</label>
-					{% for task in deadline['tasks'] %}
-						<div class="existField">
+					<label class="itemTitle">Уже Назначено</label>
+					{% set task = deadline.get('task') %}
+					{% if task is not none %}
+						<div class="existField" id="assigned">
 							<label class="current">{{ task['name'] }}</label>
 							<a href="#">Просмотреть</a>
-							<div class="checkcont">
-								<label class="edit">Удалить</label>
-								<input class="checkBox" type="checkbox" name="dt{{ task['id'] }}">
-							</div>
 						</div>
-					{% endfor %}
+					{% else %}
+						<h5 class="listEmpty">Выберите задание</h5>
+					{% endif %}
 				</div>
 
 				<div class="item">
 					<label class="itemTitle">Ваши Задания</label>
 					{% for task in current_user.tasks %}
-						<div class="existField">
+						<div class="existField" id="tasks">
 							<label class="current">{{ task.name }}</label>
 							<a href="#">Просмотреть</a>
 							<div class="checkcont">

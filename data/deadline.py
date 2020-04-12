@@ -3,18 +3,6 @@ from .db_session import SqlAlchemyBase
 
 from sqlalchemy_serializer import SerializerMixin  # to-json
 
-deadline_task = sa.Table('deadlines_to_tasks',
-                         SqlAlchemyBase.metadata,
-                         sa.Column('task',
-                                   sa.Integer,
-                                   sa.ForeignKey('tasks.id'),
-                                   primary_key=True),
-                         sa.Column('deadline',
-                                   sa.Integer,
-                                   sa.ForeignKey('deadlines.id'),
-                                   primary_key=True)
-                         )
-
 
 class Deadline(SqlAlchemyBase, SerializerMixin):
     __tablename__ = "deadlines"
@@ -29,16 +17,14 @@ class Deadline(SqlAlchemyBase, SerializerMixin):
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
 
     group_id = sa.Column(sa.Integer, sa.ForeignKey("groups.id"))
+    task_id = sa.Column(sa.Integer, sa.ForeignKey("tasks.id"))
 
-    tasks = sa.orm.relationship("Task",
-                                backref="deadlines",
-                                secondary="deadlines_to_tasks")
     solutions = sa.orm.relationship("Solution",
                                     backref="task",
-                                    lazy="dynamic")
+                                    lazy="subquery")
 
     def get_non_related_attrs(self):
-        return ("id", "name", "time", "group_id", "user_id")
+        return ("id", "name", "time", "group_id", "user_id", "task_id")
 
     def get_related_attrs(self):
         return ("tasks", )

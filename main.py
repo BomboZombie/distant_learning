@@ -65,11 +65,11 @@ def home():
     sql = db.create_session()
 
     groups = []
-    for g in current_user.groups:
+    for g in current_user.student_groups:
         data = g.to_dict(only=("name", ))
         data['deadlines'] = []
         for dl in g.deadlines:
-            data['deadlines'].append(dl.to_dict("id", "name", "time"))
+            data['deadlines'].append(dl.to_dict("id", "name", "time", "task_id"))
 
     return render_template("index.html", groups=groups)
 
@@ -212,7 +212,7 @@ def new_group():
     new_group = db.Group()
     cu = sql.query(db.User).get(current_user.id) # current_user в этой sql сессии
 
-    cu.teacher_group.append(new_group)
+    cu.teacher_groups.append(new_group)
     sql.commit()
 
     new_group_id = new_group.id
@@ -301,7 +301,8 @@ def new_deadline(group_id):
     group = sql.query(db.Group).get(group_id)
     cu = sql.query(db.User).get(current_user.id)
 
-    dl = db.Deadline(user=cu)
+    dl = db.Deadline(user=cu,
+                     group=group)
 
     sql.commit()
     dl_id = dl.id
@@ -316,9 +317,11 @@ def manage_deadline(id):
         deadline = sql.query(db.Deadline).get(id)
 
         dl_data = deadline.to_dict(only=("name", "time"))
-        dl_data["tasks"] = [t.to_dict(only=("name", "id")) for t in deadline.tasks]
+        if deadline.task is not None:
+            dl_data["task"] = deadline.task.to_dict(only=("name", "id"))
 
         g_data = deadline.group.to_dict(only=("name", ))
+        sql.close()
         return render_template("manageDeadline.html", deadline=dl_data, group=g_data)
     if request.method == "POST":
         data = parse_form(request.form)
@@ -326,19 +329,24 @@ def manage_deadline(id):
         sql = db.create_session()
         deadline = sql.query(db.Deadline).get(id)
 
-        err = False
-        for tid in remove_prefix(data.keys(), "dt"):
-            task = sql.query(db.Task).get(tid)
-            deadline.tasks.remove(task)
-
         for tid in remove_prefix(data.keys(), "at"):
             task = sql.query(db.Task).get(tid)
-            if task not in deadline.tasks:
-                deadline.tasks.append(task)
+            deadline.task = task
 
         # меняем запись в базе если внесли изменения
         deadline.name = data.get("name") if data.get("name") else deadline.name
         deadline.time = datetime.datetime.fromisoformat(data.get("time")) if data.get("time") else deadline.time
+
+        err = False
+        if deadline.task is None:
+            err = True
+            flash("Выберите задание")
+        if deadline.name is None:
+            err = True
+            flash("Придумайте название")
+        if deadline.time is None:
+            err = True
+            flash("Назначте время")
 
         sql.commit()
         sql.close()

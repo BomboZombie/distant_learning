@@ -1,5 +1,9 @@
-.existField {
-	grid-template-columns: 2fr 1fr 1fr
+#tasks {
+	grid-template-columns: 2fr 1fr 1fr;
+}
+
+#assigned {
+	grid-template-columns: 2fr 1fr;
 }
 
 .beginPage {

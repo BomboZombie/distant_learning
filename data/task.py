@@ -19,6 +19,9 @@ class Task(SqlAlchemyBase, SerializerMixin):
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
 
+    deadlines = sa.orm.relationship("Deadline",
+                                    backref="task",
+                                    lazy="subquery")
     problems = sa.orm.relationship("Problem",
                                     backref="task",
                                     lazy="subquery")
