@@ -30,7 +30,7 @@ class User(UserMixin, SerializerMixin, SqlAlchemyBase):
                                 backref="user",
                                 lazy="subquery")
     solutions = sa.orm.relationship("Solution",
-                                    backref="student",
+                                    backref="user",
                                     lazy="subquery")
     deadlines = sa.orm.relationship("Deadline",
                                     backref="user",

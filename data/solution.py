@@ -12,10 +12,8 @@ class Solution(SqlAlchemyBase, SerializerMixin):
                    primary_key=True,
                    autoincrement=True)
 
-    created_time = sa.Column(sa.DateTime,
-                             default=datetime.datetime.now)
-    data = sa.Column(sa.String)
-    response = sa.Column(sa.String, nullable=True)
+    persentage = sa.Column(sa.Integer)
+    mistakes = sa.Column(sa.String)
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
     deadline_id = sa.Column(sa.Integer, sa.ForeignKey("deadlines.id"))

@@ -57,31 +57,21 @@ def logout():
     return redirect("/")
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
 def home():
     if not current_user.is_authenticated:
         return redirect("/login")
-    if request.method == "GET":
-        student_groups = manage_sql.get_related_objects(current_user, "student_groups")
-        teacher_groups = manage_sql.get_related_objects(current_user, "teacher_groups")
-        groups = {"student": student_groups, "teacher": teacher_groups}
 
-        current_group_id = session.get("current_group_id")
-        if current_group_id is not None:
-            current_group = manage_sql.get_one_instance(db.Group, current_group_id)
-            teachers = [manage_sql.get_one_instance(db.User, id) for id in current_group["teachers"]]
-            students = [manage_sql.get_one_instance(db.User, id) for id in current_group["students"]]
-            return render_template("index.html", groups=groups, teachers=teachers, students=students, group=current_group)
-        return render_template("index.html", groups=groups, teachers=None, students=None, group=None)
+    sql = db.create_session()
 
-    if request.method == "POST":
-        action, id = list(request.form)[0].split("_")
-        if action == "loadgroup":
-            session["current_group_id"] = int(id)
-            return redirect("/")
-        elif action == "edit":
-            return redirect(f"edit/{id}")
-        return redirect("/")
+    groups = []
+    for g in current_user.groups:
+        data = g.to_dict(only=("name", ))
+        data['deadlines'] = []
+        for dl in g.deadlines:
+            data['deadlines'].append(dl.to_dict("id", "name", "time"))
+
+    return render_template("index.html", groups=groups)
 
 
 @app.route("/usertasks", methods=["GET"])
@@ -113,11 +103,12 @@ def manage_task(id):
         task_data = task.to_dict(only=("name", "description"))
 
         problems = [p.to_dict(only=("id", "text", "answer")) for p in task.problems]
+        sql.close()
         return render_template("manageTask.html", data=task_data, problems=problems)
     if request.method == "POST":
-        print(request.form)
+        # print(request.form)
         data = parse_form(request.form)
-        print(data)
+        # print(data)
 
         sql = db.create_session()
         task = sql.query(db.Task).get(id)
@@ -132,7 +123,7 @@ def manage_task(id):
         for pid, ans in map(lambda x: (x[0].strip("a"), x[1]),
                             filter(lambda x: x[0].startswith("a"), data.items())):
             problem = sql.query(db.Problem).get(int(pid))
-            problem.answer = ans
+            problem.answer = ans.strip()
 
         # change text
         for pid, text in map(lambda x: (x[0].strip("t"), x[1]),
@@ -144,6 +135,7 @@ def manage_task(id):
         for pid in remove_prefix(data, "d"):
             problem = sql.query(db.Problem).get(int(pid))
             task.problems.remove(problem)
+            # sql.delete(problem)
 
         # add new
         for k, v in filter(lambda x: x[0].startswith("n"), dict(request.form).items()):
@@ -157,13 +149,40 @@ def manage_task(id):
             if k.startswith("na"):
                 problem.answer = v.strip()
             elif k.startswith("nt"):
-                problem.text = v.strip()
-
+                problem.text = re.sub("\\r\\n", "<br/>", v.strip())
 
         sql.commit()
         sql.close()
 
         return redirect(f"/task/{id}")
+
+@app.route("/solve/<int:dl_id>", methods=["GET", "POST"])
+def solve(dl_id):
+    sql = db.create_session()
+    dl = sql.query(db.Deadline).get(dl_id)
+    task = dl.task
+    if method == "GET":
+        problems = []
+        for p in task.problems:
+            p_data = p.to_dict(only=("id", "text"))
+            problems.append(p_data)
+        sql.close()
+        return render_template("solve.html", problems=problems)
+    if method == "POST":
+        mistakes = []
+        for idx, pid, ans in request.form:
+            problem = sql.query(db.Problem).get(int(pid))
+            if ans.strip() != problem.answer:
+                mistakes.append(idx)
+        persentage = int((len(task.problems) - len(mistakes)) / len(task.problems) * 100)
+        solution = db.Solution(user=current_user,
+                               deadline=dl,
+                               persentage=persentage,
+                               mistakes=",".join(mistakes))
+        sql.add(solution)
+        sql.commit()
+        sql.close()
+        return redirect(f"/deadlines/{dl_id}")
 
 
 @app.route("/usergroups", methods=["GET"])
@@ -328,9 +347,15 @@ def manage_deadline(id):
         return redirect("/usergroups")
 
 
-@app.route("/deadlineSolutions/<int:dl_id>")
-def solved_for_deadline(group_id, dl_id):
+@app.route("/deadlines/<int:dl_id>")
+def deadlines(dl_id):
     pass
+
+
+@app.route("/solutions/<int:dl_id>")
+def solutions(dl_id):
+    pass
+
 
 # Вспомогательные функции
 def remove_prefix(data, prefix):

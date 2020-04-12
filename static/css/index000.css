@@ -1,0 +1,50 @@
+.contentbox {
+    margin-left: 2px;
+}
+
+main {
+    height: 82vh !important;
+    display: grid;
+    grid-template-columns: 2fr 5fr 3fr;
+    grid-template-areas: "group social personal";
+}
+
+.groupDisplay {
+    grid-area: group;
+    border: 2px solid red;
+    display: grid;
+    grid-template-rows: 2fr 1fr 1fr;
+}
+
+.scrollBox {
+    overflow: auto;
+    height: 15vh;
+}
+
+.groupContainer {
+    height: inherit !important;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+}
+
+.groupBtn {
+    background-color: inherit;
+    color: inherit;
+    width: 100%;
+    border: 0;
+    font-size: 20px;
+}
+
+.groupBtn:hover {
+    background-color: #999999;
+}
+
+.socialDisplay {
+    grid-area: social;
+    border: 2px solid red;
+}
+
+.personalDisplay {
+    grid-area: personal;
+    border: 2px solid red;
+}
