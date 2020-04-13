@@ -69,8 +69,9 @@ def home():
         data = g.to_dict(only=("name", ))
         data['deadlines'] = []
         for dl in g.deadlines:
-            data['deadlines'].append(dl.to_dict("id", "name", "time", "task_id"))
-
+            data['deadlines'].append(dl.to_dict(only=("id", "name", "time", "task_id")))
+        groups.append(data)
+    print(groups)
     return render_template("index.html", groups=groups)
 
 
@@ -158,31 +159,43 @@ def manage_task(id):
 
 @app.route("/solve/<int:dl_id>", methods=["GET", "POST"])
 def solve(dl_id):
-    sql = db.create_session()
-    dl = sql.query(db.Deadline).get(dl_id)
-    task = dl.task
-    if method == "GET":
+    if request.method == "GET":
+        sql = db.create_session()
+        dl = sql.query(db.Deadline).get(dl_id)
+        task = dl.task
+
+        if task is None:
+            return render_template("solve.html", problems=[], data=None)
+
         problems = []
         for p in task.problems:
             p_data = p.to_dict(only=("id", "text"))
             problems.append(p_data)
+
+        data = task.to_dict(only=("description", "name"))
         sql.close()
-        return render_template("solve.html", problems=problems)
-    if method == "POST":
+        return render_template("solve.html", problems=problems, data=data)
+    if request.method == "POST":
+        sql = db.create_session()
+        dl = sql.query(db.Deadline).get(dl_id)
+        task = dl.task
+
         mistakes = []
-        for idx, pid, ans in request.form:
+        print(dict(request.form).items())
+        for idx, el in enumerate(dict(request.form).items()):
+            pid, ans = el[0], el[1]
             problem = sql.query(db.Problem).get(int(pid))
             if ans.strip() != problem.answer:
-                mistakes.append(idx)
+                mistakes.append(str(idx))
         persentage = int((len(task.problems) - len(mistakes)) / len(task.problems) * 100)
-        solution = db.Solution(user=current_user,
-                               deadline=dl,
+        solution = db.Solution(user_id=current_user.id,
+                               deadline_id=dl.id,
                                persentage=persentage,
                                mistakes=",".join(mistakes))
         sql.add(solution)
         sql.commit()
         sql.close()
-        return redirect(f"/deadlines/{dl_id}")
+        return redirect(f"/")
 
 
 @app.route("/usergroups", methods=["GET"])
@@ -353,11 +366,6 @@ def manage_deadline(id):
         if err:
             return redirect(f"/deadline/{id}")
         return redirect("/usergroups")
-
-
-@app.route("/deadlines/<int:dl_id>")
-def deadlines(dl_id):
-    pass
 
 
 @app.route("/solutions/<int:dl_id>")

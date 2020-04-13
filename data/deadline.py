@@ -20,7 +20,7 @@ class Deadline(SqlAlchemyBase, SerializerMixin):
     task_id = sa.Column(sa.Integer, sa.ForeignKey("tasks.id"))
 
     solutions = sa.orm.relationship("Solution",
-                                    backref="task",
+                                    backref="deadline",
                                     lazy="subquery")
 
     def get_non_related_attrs(self):

@@ -10,21 +10,26 @@
 {% block body_content %}
 
 	<div class="container">
-		{% for g in groups %}
-			<div class="item">
-				<label class="itemTitle">{{ g['name'] }}</label>
-				{% for dl in g['deadlines'] %}
-					<div>
-						{{ dl['name'] }}
-						{{ dl['time'] }}
-						<a href="/deadlines/{{ dl['id'] }}">Перейти</a>
-						{% if dl.get('ans') %}
-							{{ dl['ans'] }}
-						{% endif %}
-					</div>
-				{% endfor %}
-			</div>
-		{% endfor %}
+		{% if groups|length != 0 %}
+			{% for g in groups %}
+				<div class="item">
+					<label class="itemTitle">{{ g['name'] }}</label>
+					{% for dl in g['deadlines'] %}
+						<div>
+							{{ dl['name'] }}
+							{{ dl['time'] }}
+							<a href="/solve/{{ dl['id'] }}">Перейти</a>
+							{% if dl.get('ans') %}
+								{{ dl['ans'] }}
+							{% endif %}
+						</div>
+					{% endfor %}
+				</div>
+			{% endfor %}
+		{% else %}
+			<h5 class="listEmpty">Вас еще не добавили в группу</h5>
+		{% endif %}
+
 	</div>
 
 {% endblock %}

@@ -11,15 +11,18 @@
 
 	<form class="baseform" method="post">
 		<div class="container">
-			<div class="item">
-				<label class="itemTitle">Название Задания</label>
-				<label class="current">{{ data['name'] }}</label>
-			</div>
+			{% if data is not none %}
+				<div class="item">
+					<label class="itemTitle">Название Задания</label>
+					<label class="current">{{ data['name'] }}</label>
+				</div>
 
-			<div class="item">
-				<label class="itemTitle">Описание к Заданию</label>
-				<label class="current">{{ data['description']|safe }}</label>
-			</div>
+				<div class="item">
+					<label class="itemTitle">Описание к Заданию</label>
+					<label class="current">{{ data['description']|safe }}</label>
+				</div>
+			{% endif %}
+
 
 			{% if problems|length() != 0 %}
 				<div id="problems" class="container">
@@ -38,15 +41,15 @@
 						</div>
 					{% endfor %}
 				</div>
+
+				<p class="attention">Проверьте, что вы не забыли указать ответ к какой-нибудь задаче</p>
+				<button class="submitBtn">Завершить Работу</button>
 			{% else %}
 				<div id="problems" class="container"></div>
 				<div class="container">
 					<h5 class="listEmpty">Задач нет</h5>
 				</div>
 			{% endif %}
-
-			<p class="attention">Проверьте, что вы не забыли указать ответ к какой-нибудь задаче</p>
-			<button class="submitBtn">Завершить Работу</button>
 		</div>
 	</form>
 
