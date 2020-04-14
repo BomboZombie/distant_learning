@@ -35,7 +35,7 @@
 					{% if task is not none %}
 						<div class="existField" id="assigned">
 							<label class="current">{{ task['name'] }}</label>
-							<a href="#">Просмотреть</a>
+							<a href="/correct/{{ task.id }}">Просмотреть</a>
 						</div>
 					{% else %}
 						<h5 class="listEmpty">Выберите задание</h5>
@@ -47,7 +47,7 @@
 					{% for task in current_user.tasks %}
 						<div class="existField" id="tasks">
 							<label class="current">{{ task.name }}</label>
-							<a href="#">Просмотреть</a>
+							<a href="/correct/{{ task.id }}">Просмотреть</a>
 							<div class="checkcont">
 								<label class="edit">Назначить</label>
 								<input class="checkBox" type="checkbox" name="at{{ task.id }}">

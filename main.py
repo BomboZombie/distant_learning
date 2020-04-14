@@ -223,8 +223,6 @@ def user_groups():
 
             g["deadlines"].append(dl_data)
 
-    # import json
-    # print(json.dumps({"groups": groups}, ensure_ascii=True, indent=4))
     return render_template("usergroups.html", groups=groups)
 
 
@@ -390,6 +388,17 @@ def solutions(dl_id):
     info["task"] = dl.task.name
     sql.close()
     return render_template("solutions.html", solutions=sols, data=info)
+
+
+@app.route("/correct/<int:task_id>")
+def correct(task_id):
+    sql = db.create_session()
+    task = sql.query(db.Task).get(task_id)
+    task_data = task.to_dict(only=("name", "description"))
+
+    problems = [p.to_dict(only=("id", "text", "answer")) for p in task.problems]
+    sql.close()
+    return render_template("correct.html", data=task_data, problems=problems)
 
 
 # Вспомогательные функции

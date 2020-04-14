@@ -1,0 +1,55 @@
+{% extends "/j2/base.j2" %}
+
+{% block title %}Correct{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
+<link rel="stylesheet" type="text/css" href="/static/css/manageTask.css">
+{% endblock %}
+
+{% block body_content %}
+
+	<form class="baseform" method="post">
+		<div class="container">
+			<div class="item">
+				<label class="itemTitle">Название Задания</label>
+				<label class="current">{{ data['name'] }}</label>
+			</div>
+
+			<div class="item">
+				<label class="itemTitle">Описание к Заданию</label>
+				<label class="current">{{ data['description']|safe }}</label>
+			</div>
+
+			<div class="container">
+				<h3>Уже Добавлено</h3>
+			</div>
+
+			{% if problems|length() != 0 %}
+				<div id="problems" class="container">
+					{% for p in problems %}
+						<div class="item">
+							<h2>#{{ loop.index }}</h2>
+
+							<label class="itemTitle">Текст Задачи</label>
+							<p class="current para highlight">
+								{{ p['text']|safe }}
+							</p>
+
+							<div class="ans">
+								<label class="itemTitle">Ответ:</label>
+								<label class="current highlight">{{ p['answer'] }}</label>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div id="problems" class="container"></div>
+				<div class="container">
+					<h5 class="listEmpty">Задач нет</h5>
+				</div>
+			{% endif %}
+		</div>
+	</form>
+
+{% endblock %}

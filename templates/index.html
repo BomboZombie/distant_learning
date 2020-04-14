@@ -15,12 +15,12 @@
 				<div class="item">
 					<label class="itemTitle">{{ g['name'] }}</label>
 					{% for dl in g['deadlines'] %}
-						<div>
-							{{ dl['name'] }}
-							{{ dl['time'] }}
+						<div class="existField">
+							<label class="current">{{ dl['name'] }}</label>
+							<label class="current">{{ dl['time'] }}</label>
 							<a href="/solve/{{ dl['id'] }}">Перейти</a>
 							{% if dl.get('ans') %}
-								{{ dl['ans'] }}
+								<a href="/correct/{{ dl['task_id'] }}">{{ dl['ans'] }}</a>
 							{% endif %}
 						</div>
 					{% endfor %}
