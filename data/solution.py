@@ -12,7 +12,7 @@ class Solution(SqlAlchemyBase, SerializerMixin):
                    primary_key=True,
                    autoincrement=True)
 
-    persentage = sa.Column(sa.Integer)
+    percentage = sa.Column(sa.Integer)
     mistakes = sa.Column(sa.String)
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))

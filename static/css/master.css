@@ -69,6 +69,10 @@ a {
     font-style: italic;
 }
 
+.highlight {
+    color: palegoldenrod;
+}
+
 /* Form Commons*/
 .submitBtn {
     background-color: #7eaeff;
@@ -89,8 +93,8 @@ a {
 }
 
 .checkBox {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
 }
 
 .alert {

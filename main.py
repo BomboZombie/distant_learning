@@ -186,13 +186,22 @@ def solve(dl_id):
             pid, ans = el[0], el[1]
             problem = sql.query(db.Problem).get(int(pid))
             if ans.strip() != problem.answer:
-                mistakes.append(str(idx))
-        persentage = int((len(task.problems) - len(mistakes)) / len(task.problems) * 100)
-        solution = db.Solution(user_id=current_user.id,
-                               deadline_id=dl.id,
-                               persentage=persentage,
-                               mistakes=",".join(mistakes))
-        sql.add(solution)
+                mistakes.append(str(idx + 1))
+        percentage = int((len(task.problems) - len(mistakes)) / len(task.problems) * 100)
+
+        # если уже решал - перезаписать решение
+        ok = [s for s in dl.solutions if s.user_id == current_user.id]
+        if len(ok) == 0:
+            solution = db.Solution()
+            sql.add(solution)
+        else:
+            solution = ok[0]
+
+        solution.user_id = current_user.id
+        solution.deadline_id = dl.id
+        solution.percentage = percentage
+        solution.mistakes = ",".join(mistakes)
+
         sql.commit()
         sql.close()
         return redirect(f"/")
@@ -370,7 +379,17 @@ def manage_deadline(id):
 
 @app.route("/solutions/<int:dl_id>")
 def solutions(dl_id):
-    pass
+    sql = db.create_session()
+    dl = sql.query(db.Deadline).get(dl_id)
+    sols = []
+    for s in dl.solutions:
+        data = s.to_dict(only=("percentage", "mistakes"))
+        data["user"] = s.user.full_name
+        sols.append(data)
+    info = dl.to_dict(only=("time", "name"))
+    info["task"] = dl.task.name
+    sql.close()
+    return render_template("solutions.html", solutions=sols, data=info)
 
 
 # Вспомогательные функции
