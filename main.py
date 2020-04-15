@@ -1,5 +1,4 @@
 import os
-import json
 import datetime
 import re
 from flask import *
@@ -66,12 +65,27 @@ def home():
 
     groups = []
     for g in current_user.student_groups:
-        data = g.to_dict(only=("name", ))
-        data['deadlines'] = []
+        g_data = g.to_dict(only=("name", ))
+        g_data['deadlines'] = []
         for dl in g.deadlines:
-            data['deadlines'].append(dl.to_dict(only=("id", "name", "time", "task_id")))
-        groups.append(data)
-    print(groups)
+            dl_data = dl.to_dict(only=("id", "name", "time", "task_id"))
+
+            solution = get_present(dl.solutions, lambda s: s.user_id == current_user.id)
+            if dl.time < datetime.datetime.now():
+                if solution is not None:
+                    dl_data['status'] = f"Результат: {solution['percentage']}"
+                else:
+                    dl_data['status'] = "Срок пропущен"
+            else:
+                if solution is not None:
+                    dl_data['status'] = "Сдано"
+                else:
+                    dl_data['status'] = "Не сдано"
+            g_data['deadlines'].append(dl_data)
+
+        groups.append(g_data)
+    import json
+    print(json.dumps({"groups": groups}, ensure_ascii=False, indent=4))
     return render_template("index.html", groups=groups)
 
 
@@ -190,12 +204,10 @@ def solve(dl_id):
         percentage = int((len(task.problems) - len(mistakes)) / len(task.problems) * 100)
 
         # если уже решал - перезаписать решение
-        ok = [s for s in dl.solutions if s.user_id == current_user.id]
-        if len(ok) == 0:
+        solution = get_present(dl.solutions, lambda s: s.user_id == current_user.id)
+        if solution is None:
             solution = db.Solution()
             sql.add(solution)
-        else:
-            solution = ok[0]
 
         solution.user_id = current_user.id
         solution.deadline_id = dl.id
@@ -397,8 +409,12 @@ def correct(task_id):
     task_data = task.to_dict(only=("name", "description"))
 
     problems = [p.to_dict(only=("id", "text", "answer")) for p in task.problems]
+    solution = get_present(current_user.solutions, lambda s: s.deadline.task_id == task_id)
+    if solution is not None:
+        solution = solution.to_dict(only=("percentage", "mistakes"))
+
     sql.close()
-    return render_template("correct.html", data=task_data, problems=problems)
+    return render_template("correct.html", data=task_data, problems=problems, solution=solution)
 
 
 # Вспомогательные функции
@@ -409,6 +425,8 @@ def remove_prefix(data, prefix):
 def parse_form(data):
     return {k:v.strip() for k, v in dict(data).items() if v.strip() != ""}
 
+def get_present(data, func):
+    return next(filter(func, data), None)
 
 if __name__ == '__main__':
     db.global_init("lib/distant_learning.db")

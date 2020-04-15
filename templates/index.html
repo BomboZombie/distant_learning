@@ -19,8 +19,10 @@
 							<label class="current">{{ dl['name'] }}</label>
 							<label class="current">{{ dl['time'] }}</label>
 							<a href="/solve/{{ dl['id'] }}">Перейти</a>
-							{% if dl.get('ans') %}
-								<a href="/correct/{{ dl['task_id'] }}">{{ dl['ans'] }}</a>
+							{% if dl.get('status') %}
+								<a href="/correct/{{ dl['task_id'] }}">{{ dl['status'] }}</a>
+							{% else %}
+								<div></div>
 							{% endif %}
 						</div>
 					{% endfor %}

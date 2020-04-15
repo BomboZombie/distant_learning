@@ -21,9 +21,13 @@
 				<label class="current">{{ data['description']|safe }}</label>
 			</div>
 
-			<div class="container">
-				<h3>Уже Добавлено</h3>
-			</div>
+			{% if solution is not none %}
+				<div class="item">
+					<label class="itemTitle">Результат</label>
+					<label class="current">Процент выполнения: <span class="highlight">{{ solution['percentage'] }}%</span></label>
+					<label class="current">Ошибки в заданиях: <span class="highlight">{{ solution['mistakes'] }}</span></label>
+				</div>
+			{% endif %}
 
 			{% if problems|length() != 0 %}
 				<div id="problems" class="container">
