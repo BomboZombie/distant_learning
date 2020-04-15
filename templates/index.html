@@ -3,29 +3,39 @@
 {% block title %}HomePage{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="/static/css/index.css">
 <link rel="stylesheet" type="text/css" href="/static/css/taskNgroup.css">
+<link rel="stylesheet" href="/static/css/index.css">
 {% endblock %}
 
 {% block body_content %}
 
 	<div class="container">
 		{% if groups|length != 0 %}
-			{% for g in groups %}
+			{% for g in groups|sort(attribute="name") %}
 				<div class="item">
 					<label class="itemTitle">{{ g['name'] }}</label>
-					{% for dl in g['deadlines'] %}
-						<div class="existField">
-							<label class="current">{{ dl['name'] }}</label>
-							<label class="current">{{ dl['time'] }}</label>
-							<a href="/solve/{{ dl['id'] }}">Перейти</a>
-							{% if dl.get('status') %}
-								<a href="/correct/{{ dl['task_id'] }}">{{ dl['status'] }}</a>
-							{% else %}
-								<div></div>
-							{% endif %}
+
+					{% if g['deadlines']|length != 0 %}
+						<div class="scrollBox">
+							{% for dl in g['deadlines']|sort(attribute="time", reverse=True) %}
+								<div class="existField">
+									<label class="current">{{ dl['name'] }}</label>
+									<label class="current">{{ dl['time'] }}</label>
+									<a href="/solve/{{ dl['id'] }}">Перейти</a>
+									{% if dl.get('status') %}
+										<a href="/correct/{{ dl['task_id'] }}">{{ dl['status'] }}</a>
+									{% else %}
+										<div></div>
+									{% endif %}
+								</div>
+							{% endfor %}
 						</div>
-					{% endfor %}
+					{% else %}
+						<div class="container">
+							<h5 class="listEmpty">Назначенных заданий пока нет</h5>
+						</div>
+					{% endif %}
+
 				</div>
 			{% endfor %}
 		{% else %}

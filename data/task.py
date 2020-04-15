@@ -12,10 +12,11 @@ class Task(SqlAlchemyBase, SerializerMixin):
                    primary_key=True,
                    autoincrement=True)
 
-    name = sa.Column(sa.String)
+    name = sa.Column(sa.String, default="Задание Без Названия")
     created_time = sa.Column(sa.DateTime,
                              default=datetime.datetime.now)
-    description = sa.Column(sa.String)
+    description = sa.Column(sa.String, default="""Описания нет :-( <br/>
+                                                  Должно быть вы знаете, что делать""")
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
 

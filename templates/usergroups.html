@@ -11,8 +11,10 @@
 	<div class="container">
 		<div class="beginPage">
 			<h2>Ваши Группы</h2>
-			<p class="help">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-			tempor incididunt ut labore et dolore magna aliqua.</p>
+			<p class="help">
+				Вы можете создавать группы. <br/>
+				В группу можно пригласить других учителей или учеников. <br/>
+				Через группу ученикам можно назначать задания.</p>
 			<button class="itemBtn" onclick="location.href='/newgroup'">Создать Группу</button>
 		</div>
 	</div>
@@ -28,21 +30,28 @@
 					</div>
 					<div class="container">
 						<label class="itemTitle">Сроки</label>
-						<div class="scrollBox">
-							{% for dl in g["deadlines"] %}
-								<div class="existField">
-									<label class="current">{{ dl['name'] }}</label>
-									<label class="current">{{ dl['time'] }}</label>
-									<label class="current">{{ dl['user'] }}</label>
-									{% if dl['user_id'] == current_user.id %}
-										<div class="checkcont">
-											<a href="/solutions/{{ dl['id'] }}">Результаты</a>
-											<a href="/deadline/{{ dl['id'] }}">Изменить</a>
-										</div>
-									{% endif %}
-								</div>
-							{% endfor %}
-						</div>
+						{% if g["deadlines"]|length != 0 %}
+							<div class="scrollBox">
+								{% for dl in g["deadlines"] %}
+									<div class="existField">
+										<label class="current">{{ dl['name'] }}</label>
+										<label class="current">{{ dl['time'] }}</label>
+										<label class="current">{{ dl['user'] }}</label>
+										{% if dl['user_id'] == current_user.id %}
+											<div class="checkcont">
+												<a href="/solutions/{{ dl['id'] }}">Результаты</a>
+												<a href="/deadline/{{ dl['id'] }}">Изменить</a>
+											</div>
+										{% endif %}
+									</div>
+								{% endfor %}
+							</div>
+						{% else %}
+							<div class="container">
+								<h5 class="listEmpty">Назначенных заданий пока нет</h5>
+							</div>
+						{% endif %}
+
 					</div>
 				</div>
 			{% endfor %}

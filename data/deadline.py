@@ -11,7 +11,7 @@ class Deadline(SqlAlchemyBase, SerializerMixin):
                    primary_key=True,
                    autoincrement=True)
 
-    name = sa.Column(sa.String)
+    name = sa.Column(sa.String, default="Дедлайн Без Названия")
     time = sa.Column(sa.DateTime)
 
     user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))

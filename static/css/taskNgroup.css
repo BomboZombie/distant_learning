@@ -45,7 +45,9 @@
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1fr 3fr 1fr;
-	/* HOVER */
+}
+.existField:hover {
+	background-color: #999999;
 }
 
 .existField label {

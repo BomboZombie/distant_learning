@@ -1,0 +1,23 @@
+{% extends "j2/loginForm.j2" %}
+
+{% block title %}Register{% endblock %}
+
+{% block heading %}Зарегестрироваться на сайте{% endblock %}
+
+{% block fields %}
+
+{{ insert_field(form.name) }}
+{{ insert_field(form.surname) }}
+{{ insert_field(form.email) }}
+{{ insert_field(form.password) }}
+{{ insert_field(form.password_again) }}
+
+{{ form.submit(class="submitBtn") }}
+
+{% endblock %}
+
+{% block afterForm %}
+<div class="alert">
+    {{ message }}
+</div>
+{% endblock %}

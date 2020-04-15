@@ -10,6 +10,11 @@
 {{ insert_field(form.password) }}
 {{ insert_field(form.remember_me, "checkBox") }}
 
+<div style="margin-top: 10px; display: inline-block;">
+	<label>Впервые на сайте?</label>
+	<a href="/register">Зарегестрироваться</a>
+</div>
+
 {{ form.submit(class="submitBtn") }}
 
 {% endblock %}

@@ -20,7 +20,6 @@ class User(UserMixin, SerializerMixin, SqlAlchemyBase):
     email = sa.Column(sa.String,
                       index=True,
                       unique=True)
-    about = sa.Column(sa.String, nullable=True)
     hashed_password = sa.Column(sa.String)
 
     # messages = sa.orm.relationship("Message",
