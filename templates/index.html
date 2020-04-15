@@ -8,6 +8,11 @@
 {% endblock %}
 
 {% block body_content %}
+	<div class="container">
+		<div class="beginPage">
+			<h1>Ваши Группы</h1>
+		</div>
+	</div>
 
 	<div class="container">
 		{% if groups|length != 0 %}
@@ -21,11 +26,13 @@
 								<div class="existField">
 									<label class="current">{{ dl['name'] }}</label>
 									<label class="current">{{ dl['time'] }}</label>
-									<a href="/solve/{{ dl['id'] }}">Перейти</a>
-									{% if dl.get('status') %}
-										<a href="/correct/{{ dl['task_id'] }}">{{ dl['status'] }}</a>
-									{% else %}
+
+									{% if dl['status']['show'] %}
 										<div></div>
+										<a href="/correct/{{ dl['task_id'] }}">{{ dl['status']['text'] }}</a>
+									{% else %}
+										<a href="/solve/{{ dl['id'] }}">Перейти</a>
+										<label>{{ dl['status']['text'] }}</label>
 									{% endif %}
 								</div>
 							{% endfor %}

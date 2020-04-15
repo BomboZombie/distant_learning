@@ -1,3 +1,8 @@
 .existField {
 	grid-template-columns: 3fr 2fr 1.2fr 2fr;
 }
+
+.beginPage {
+	width: 65%;
+	align-items: flex-start;
+}

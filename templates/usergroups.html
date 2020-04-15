@@ -32,7 +32,7 @@
 						<label class="itemTitle">Сроки</label>
 						{% if g["deadlines"]|length != 0 %}
 							<div class="scrollBox">
-								{% for dl in g["deadlines"] %}
+								{% for dl in g["deadlines"]|sort(attribute="time", reverse=True) %}
 									<div class="existField">
 										<label class="current">{{ dl['name'] }}</label>
 										<label class="current">{{ dl['time'] }}</label>

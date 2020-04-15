@@ -92,14 +92,18 @@ def home():
             solution = get_present(dl.solutions, lambda s: s.user_id == current_user.id)
             if dl.time < datetime.datetime.now():
                 if solution is not None:
-                    dl_data['status'] = f"Результат: {solution['percentage']}"
+                    dl_data['status'] = {"text": f"Результат: {solution.percentage}",
+                                         "show": True}
                 else:
-                    dl_data['status'] = "Срок пропущен"
+                    dl_data['status'] = {"text": "Срок пропущен",
+                                         "show": True}
             else:
                 if solution is not None:
-                    dl_data['status'] = "Сдано"
+                    dl_data['status'] = {"text": "Сдано",
+                                         "show": False}
                 else:
-                    dl_data['status'] = "Не сдано"
+                    dl_data['status'] = {"text": "Не сдано",
+                                         "show": False}
             g_data['deadlines'].append(dl_data)
 
         groups.append(g_data)
@@ -371,6 +375,12 @@ def manage_deadline(id):
 
         sql = db.create_session()
         deadline = sql.query(db.Deadline).get(id)
+
+        if "delete" in data:
+            sql.delete(deadline)
+            sql.commit()
+            sql.close()
+            return redirect("/usergroups")
 
         for tid in remove_prefix(data.keys(), "at"):
             task = sql.query(db.Task).get(tid)

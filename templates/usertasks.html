@@ -24,6 +24,7 @@
 					<h3>{{ item["name"] }}</h3>
 					<div>
 						<button class="itemBtn" style="background-color: #61e58e" onclick="location.href='/task/{{ item['id'] }}'">Редактировать</button>
+						<button class="itemBtn" style="background-color: #f6af40" onclick="location.href='/correct/{{ item['id'] }}'">Просмотреть</button>
 					</div>
 				</div>
 			{% endfor %}
