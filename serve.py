@@ -1,6 +1,6 @@
 import data as db
 import datetime
-from api import manage_sql
+import manage_sql
 
 groups = [
     {
