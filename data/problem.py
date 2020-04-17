@@ -12,6 +12,5 @@ class Problem(SqlAlchemyBase, SerializerMixin):
 
     text = sa.Column(sa.String)
     answer = sa.Column(sa.String)
-    # order = sa.Column(sa.Integer)
 
     task_id = sa.Column(sa.Integer, sa.ForeignKey("tasks.id"))

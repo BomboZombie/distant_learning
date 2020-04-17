@@ -254,7 +254,6 @@ def user_groups():
             dl_data["user"] = dl.user.full_name
 
             g["deadlines"].append(dl_data)
-
     return render_template("usergroups.html", groups=groups)
 
 
@@ -445,6 +444,4 @@ def get_present(data, func):
 
 if __name__ == '__main__':
     db.global_init("lib/distant_learning.db")
-    # import serve
-    # serve.recreate_db()
     app.run(port="8080", host='127.0.0.1')
