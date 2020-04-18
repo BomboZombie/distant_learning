@@ -146,6 +146,12 @@ def manage_task(id):
         sql = db.create_session()
         task = sql.query(db.Task).get(id)
 
+        if "remove" in data:
+            sql.delete(task)
+            sql.commit()
+            sql.close()
+            return redirect("/usertasks")
+
         # change basic
         if data.get("Name") is not None:
             task.name = data.get("Name").strip()
@@ -404,6 +410,11 @@ def manage_deadline(id):
 def solutions(dl_id):
     sql = db.create_session()
     dl = sql.query(db.Deadline).get(dl_id)
+
+    if dl.task is None:
+        flash("Задание на этот срок не назначено.")
+        return redirect("/usergroups")
+
     sols = []
     for s in dl.solutions:
         data = s.to_dict(only=("percentage", "mistakes"))
