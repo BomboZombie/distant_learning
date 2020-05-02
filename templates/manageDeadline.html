@@ -44,16 +44,20 @@
 
 				<div class="item">
 					<label class="itemTitle">Ваши Задания</label>
-					{% for task in current_user.tasks %}
-						<div class="existField" id="tasks">
-							<label class="current">{{ task.name }}</label>
-							<a href="/correct/{{ task.id }}">Просмотреть</a>
-							<div class="checkcont">
-								<label class="edit">Назначить</label>
-								<input class="checkBox" type="checkbox" name="at{{ task.id }}">
+					{% if current_user.tasks|length != 0 %}
+						{% for task in current_user.tasks %}
+							<div class="existField" id="tasks">
+								<label class="current">{{ task.name }}</label>
+								<a href="/correct/{{ task.id }}">Просмотреть</a>
+								<div class="checkcont">
+									<label class="edit">Назначить</label>
+									<input class="checkBox" type="checkbox" name="at{{ task.id }}">
+								</div>
 							</div>
-						</div>
-					{% endfor %}
+						{% endfor %}
+					{% else %}
+						<h5 class="listEmpty">Сначала создайте задания</h5>
+					{% endif %}
 				</div>
 
 				<div class="item">
