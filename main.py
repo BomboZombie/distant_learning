@@ -452,4 +452,5 @@ def get_present(data, func):
 
 if __name__ == '__main__':
     db.global_init("lib/distant_learning.db")
-    app.run(port="8080", host='127.0.0.1')
+
+    # app.run(port="8080", host='distant-learning.herokuapp.com')
