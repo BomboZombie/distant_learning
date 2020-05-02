@@ -450,7 +450,6 @@ def parse_form(data):
 def get_present(data, func):
     return next(filter(func, data), None)
 
-if __name__ == '__main__':
-    db.global_init("lib/distant_learning.db")
 
-    # app.run(port="8080", host='distant-learning.herokuapp.com')
+db.global_init("lib/distant_learning.db")
+# app.run(port="8080", host='127.0.0.1')
